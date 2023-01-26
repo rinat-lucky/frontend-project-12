@@ -1,44 +1,50 @@
 import { useState, useEffect, useRef } from 'react';
-// import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-// import axios from 'axios';
 
 import { Button, Form } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image'
+import Header from "../header/Header";
 
-// import routes from '../routes.js';
+import ChatAPI from '../../api/ChatAPI';
 
 const LoginPage = () => {
-  const [logFailed] = useState(false);
-  // const [logFailed, setLogFailed] = useState(false);
+  const [logFailed, setLogFailed] = useState(false);
   const inputEl = useRef(null);
-  // const auth = useAuth();
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  // const path = location.state?.from?.pathname || '/';
+  const location = useLocation();
+  const navigate = useNavigate();
+  const path = location.state?.from?.pathname || '/';
+  const api = new ChatAPI();
 
   useEffect(() => {
     inputEl.current.focus();
   }, []);
 
-  // const logIn = async (params) => {
-  //   try {
-  //     const res = await axios.post(routes.loginPath(), params);
-  //     localStorage.setItem('userId', JSON.stringify(res.data));
-  //     auth.logIn();
-  //     return navigate(path);
-  //   } catch (e) {
-  //     return setLogFailed(true);
-  //   }
-  // };
+  const logIn = async (params) => {
+    try {
+      const token = await api.logIn(params);
+      console.log('token', token);
+      localStorage.setItem('userId', JSON.stringify(token));
+      return navigate(path);
+    } catch (error) {
+      setLogFailed(true);
+      throw new Error(`Ошибка при попытке авторизации: ${error}`)
+    }
+  };
 
   const getValidData = async (object) => {
-    const schemaStr = yup.string().required().trim();
-    const name = await schemaStr.validate(object['username']);
-    const pass = await schemaStr.validate(object['password']);
-    return { username: name, password: pass };
+    
+    try {
+      const schemaStr = yup.string().required().trim();
+      const name = await schemaStr.validate(object['username']);
+      const pass = await schemaStr.validate(object['password']);
+      return { username: name, password: pass };
+    } catch (error) {
+      setLogFailed(true);
+      throw new Error(`Ошибка валидации: ${error}`)
+    }
   };
   
   const formik = useFormik({
@@ -47,22 +53,23 @@ const LoginPage = () => {
       password: '',
     },
     onSubmit: async (values) => {
-      console.log('Log-Pass', values);
       const validData = await getValidData(values);
-      console.log('Valid Log-Pass', validData);
-      // logIn(values),
+      await logIn(validData);
+
+      // const handleSubmit = (event) => {
+      //   const form = event.currentTarget;
+      //   if (form.checkValidity() === false) {
+      //     event.preventDefault();
+      //     event.stopPropagation();
+      //   }
+      //   setValidated(true);
+      // };
     },
   });
   
   return (
-    <>
-      <div>
-        Полезные ссылки:
-        <Link to="404" relative="/">на страницу 404</Link>
-        <Link to="login" relative="/">на страницу авторизации</Link>
-        <Link to="/" relative="/">на главную страницу</Link>
-      </div>
-      
+    <div className="d-flex flex-column h-100">
+      <Header />
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">
@@ -110,7 +117,20 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </>
+
+      <div>
+        Полезные ссылки:
+        <div>
+          <Link to="../404">на страницу 404</Link>
+        </div>
+        <div>
+          <Link to="../login">на страницу авторизации</Link>
+        </div>
+        <div>
+          <Link to="/">на главную страницу</Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
