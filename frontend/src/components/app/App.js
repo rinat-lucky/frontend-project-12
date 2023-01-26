@@ -1,16 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import HomePage from "../homePage/HomePage";
+import LoginPage from "../loginPage/LoginPage";
+import NotFoundPage from "../404/404";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
+    path: "404",
+    element: <NotFoundPage />,
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hello, Rinat!
-        </p>
-      </header>
-    </div>
+    <RouterProvider router={router} />
   );
 }
 
