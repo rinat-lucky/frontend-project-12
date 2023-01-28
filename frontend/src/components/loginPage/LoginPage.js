@@ -38,8 +38,7 @@ const LoginPage = () => {
     validationSchema: schema,
     onSubmit: async (values) => {
       const jwt = await api.login(values);
-      const jwtString = JSON.stringify(jwt);
-      await auth.setLogin(jwtString);
+      await auth.setLogin(jwt);
     },
   });
   
@@ -60,7 +59,7 @@ const LoginPage = () => {
                 <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
                   <h1 className="text-center mb-4">Войти</h1>
                   <Form.Group className="form-floating mb-3">
-                    <Form.Label htmlFor="username">Ваш ник</Form.Label>
+                    <Form.Label htmlFor="username">Ваш ник (admin)</Form.Label>
                     <Form.Control
                       ref={inputEl}
                       onChange={handleChange}
@@ -74,7 +73,7 @@ const LoginPage = () => {
                     />
                   </Form.Group>
                   <Form.Group className="form-floating mb-4">
-                    <Form.Label htmlFor="password">Пароль</Form.Label>
+                    <Form.Label htmlFor="password">Пароль (admin)</Form.Label>
                     <Form.Control
                       onChange={handleChange}
                       value={values.password}
