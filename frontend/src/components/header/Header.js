@@ -7,7 +7,7 @@ const Header = ({ logoutBtn }) => {
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
         <Link className="navbar-brand" to="/">Hexlet Chat</Link>
-        { logoutBtn && <LogoutButton/>}
+        { logoutBtn && <LogoutButton /> }
       </div>
     </nav>
   );

@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
+import { useRouteError, Link } from "react-router-dom";
 import Header from "../header/Header";
 
 const NotFoundPage = () => {
+  const error = useRouteError();
+  console.error(error);
+  
   return (
     <div className="d-flex flex-column h-100">
       <Header />

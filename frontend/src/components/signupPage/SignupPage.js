@@ -8,9 +8,6 @@ const SignupPage = () => {
       <div className="m-3">
         <h1>Страница регистрации</h1>
         <div>
-          <Link to="../404">на страницу 404</Link>
-        </div>
-        <div>
           <Link to="../login">на страницу авторизации</Link>
         </div>
         <div>

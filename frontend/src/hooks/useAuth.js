@@ -5,16 +5,16 @@ const useAuth = () => {
 
   return {
     isAuth,
-    setLogin(jwt) {
+    setLogin(id) {
       return new Promise((resolve) => {
-        localStorage.setItem('JWT', jwt);
+        localStorage.setItem('userId', id);
         setAuth(true);
         resolve();
       });
     },
     setLogout() {
       return new Promise((resolve) => {
-        localStorage.removeItem('JWT');
+        localStorage.removeItem('userId');
         setAuth(false);
         resolve();
       });

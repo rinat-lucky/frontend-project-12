@@ -1,16 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import { Button, Form } from 'react-bootstrap';
+import Image from 'react-bootstrap/Image';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { Button, Form } from 'react-bootstrap';
-import Image from 'react-bootstrap/Image'
 import Header from "../header/Header";
-
 import ChatAPI from '../../api/ChatAPI';
 import AuthConsumer from '../../contexts/AuthContext';
 
+const imgURL = "https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg";
 const schema = yup.object().shape({
   username: yup.string().min(2).max(15).required(),
   password: yup.string().min(2).max(15).required(),
@@ -22,11 +22,9 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const api = new ChatAPI();
 
-  console.log('is-AUTH-logPage', auth.isAuth);
-
   useEffect(() => {
     if (auth.isAuth) navigate('/');
-  }, [auth.isAuth, navigate])
+  }, [auth, navigate])
 
   useEffect(() => {
     inputEl.current.focus();
@@ -56,11 +54,7 @@ const LoginPage = () => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">
                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                  <Image
-                    src="https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg"
-                    alt="Войти"
-                    roundedCircle={true}
-                  />
+                  <Image src={imgURL} alt="Войти" roundedCircle={true} />
                 </div>
 
                 <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
@@ -105,22 +99,6 @@ const LoginPage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div>
-        Полезные ссылки:
-        <div>
-          <Link to="../404">на страницу 404</Link>
-        </div>
-        <div>
-          <Link to="../login">на страницу авторизации</Link>
-        </div>
-        <div>
-          <Link to="../signup">на страницу регистрации</Link>
-        </div>
-        <div>
-          <Link to="/">на главную страницу</Link>
         </div>
       </div>
     </div>

@@ -4,12 +4,13 @@ import { AuthProvider } from "../../contexts/AuthContext";
 import HomePage from "../homePage/HomePage";
 import LoginPage from "../loginPage/LoginPage";
 import SignupPage from "../signupPage/SignupPage";
-import NotFoundPage from "../404/404";
+import NotFoundPage from "../404/NotFoundPage";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <HomePage />,
+    errorElement: <NotFoundPage />,
 	},
 	{
 		path: "login",
@@ -18,10 +19,6 @@ const router = createBrowserRouter([
 	{
 		path: "signup",
 		element: <SignupPage />,
-	},
-	{
-		path: "404",
-		element: <NotFoundPage />,
 	},
 ]);
 
