@@ -19,7 +19,7 @@ const MessageForm = () => {
   });
 
   return (
-    <Form noValidate validated={false} onSubmit={formik.handleSubmit} className="py-1 border rounded-2">
+    <Form noValidate onSubmit={formik.handleSubmit} className="py-1 border rounded-2">
       <InputGroup hasValidation>
         <Form.Control
           ref={inputEl}
