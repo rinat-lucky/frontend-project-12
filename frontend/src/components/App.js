@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { AuthProvider } from "../../contexts/AuthContext";
-import HomePage from "../homePage/HomePage";
-import LoginPage from "../loginPage/LoginPage";
-import SignupPage from "../signupPage/SignupPage";
-import NotFoundPage from "../404/NotFoundPage";
+import { AuthProvider } from "../contexts/AuthContext";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const router = createBrowserRouter([
 	{

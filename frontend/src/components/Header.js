@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
-import AuthConsumer from "../../contexts/AuthContext";
+import AuthConsumer from "../contexts/AuthContext";
 
 const Header = ({ logoutBtn }) => {
   const auth = AuthConsumer();

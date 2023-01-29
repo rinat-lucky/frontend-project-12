@@ -6,9 +6,9 @@ import Image from 'react-bootstrap/Image';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import Header from "../header/Header";
-import ChatAPI from '../../api/ChatAPI';
-import AuthConsumer from '../../contexts/AuthContext';
+import Header from "../components/Header";
+import ChatAPI from '../api/ChatAPI';
+import AuthConsumer from '../contexts/AuthContext';
 
 const imgURL = "https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg";
 const schema = yup.object().shape({

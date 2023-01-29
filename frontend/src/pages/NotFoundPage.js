@@ -1,5 +1,5 @@
 import { useRouteError, Link } from "react-router-dom";
-import Header from "../header/Header";
+import Header from "../components/Header";
 
 const NotFoundPage = () => {
   const error = useRouteError();
