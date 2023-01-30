@@ -10,6 +10,7 @@ import MessageForm from "../components/MessageForm";
 import { AddChannelButton } from "../components/buttons";
 import ChannelsList from "../components/ChannelsList";
 import AuthConsumer from "../contexts/AuthContext";
+import Messages from "../components/Messages";
 
 const HomePage = () => {
   const auth = AuthConsumer();
@@ -19,7 +20,7 @@ const HomePage = () => {
   const api = useMemo(() => new ChatAPI(), []);
   const channels = useSelector((state) => state.channels.list);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
-  const messages = useSelector((state) => state.messages.value);
+  const messages = useSelector((state) => state.messages.collection);
 
   useEffect(() => {
     if (!jwt) return navigate('login');
@@ -45,14 +46,8 @@ const HomePage = () => {
   };
 
   const renderMessages = () => {
-    console.log('СООБЩЕНИЯ', messages);
-    return (
-      <>
-        <span>Сообщения в канале:</span>
-        <br />
-        <span>Hello, World</span>
-      </>
-    );
+    if (!messages.length) return '';
+    return <Messages />
   };
   
   return (

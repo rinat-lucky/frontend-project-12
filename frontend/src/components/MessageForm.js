@@ -1,19 +1,44 @@
 import { useEffect, useRef } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import io from 'socket.io-client';
 import { useFormik } from 'formik';
+import uniqueId from 'lodash.uniqueid';
+import { Form, InputGroup } from 'react-bootstrap';
+
 import { SendMessageButton } from './buttons';
+import { addMessage, setCurrentMessage } from '../slices/messagesSlice';
+
+const socket = io();
 
 const MessageForm = () => {
+  const currentChannelId = useSelector((state) => state.channels.currentChannelId);
+  const currentMessage = useSelector((state) => state.messages.currentMessage);
+  const dispatch = useDispatch();
   const inputEl = useRef(null);
-  
+
   useEffect(() => {
     inputEl.current.focus();
   }, []);
+
+  useEffect(() => {
+    if (!Object.keys(currentMessage).length) return;
+    socket.on('newMessage', currentMessage => {
+      dispatch(addMessage({...currentMessage, id: uniqueId()}));
+    });
+
+    return () => socket.off('newMessage');
+  }, [currentMessage, dispatch]);
   
   const formik = useFormik({
     initialValues: { message: '' },
     onSubmit:  (values, {resetForm}) => {
-      console.log(values.message);
+      const newMessage = {
+        channelId: currentChannelId,
+        body: values.message,
+        username: 'admin',
+      };
+      dispatch(setCurrentMessage(newMessage));
+      socket.emit('newMessage', newMessage);
       resetForm();
     },
   });
