@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from "react-router-dom";
-import { Button, Form } from 'react-bootstrap';
-import Image from 'react-bootstrap/Image';
+import { useEffect, useRef, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom';
+import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
+import { setCurrentUser } from '../slices/usersSlice';
 import Header from "../components/Header";
 import ChatAPI from '../api/ChatAPI';
 import AuthConsumer from '../contexts/AuthContext';
@@ -20,15 +20,23 @@ const LoginPage = () => {
   const auth = AuthConsumer();
   const inputEl = useRef(null);
   const navigate = useNavigate();
-  const api = new ChatAPI();
+  const dispatch = useDispatch();
+  const api = useMemo(() => new ChatAPI(), []);
 
   useEffect(() => {
     if (auth.isAuth) navigate('/');
-  }, [auth, navigate])
+  }, [auth, navigate]);
 
   useEffect(() => {
     inputEl.current.focus();
   }, []);
+
+  const setUser = (data) => {
+    return new Promise((resolve) => {
+      dispatch(setCurrentUser(data));
+      resolve();
+    });
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -39,6 +47,7 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       const jwt = await api.login(values);
       await auth.setLogin(jwt);
+      await setUser(values);
     },
   });
   
@@ -59,32 +68,32 @@ const LoginPage = () => {
                 <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
                   <h1 className="text-center mb-4">Войти</h1>
                   <Form.Group className="form-floating mb-3">
-                    <Form.Label htmlFor="username">Ваш ник (admin)</Form.Label>
-                    <Form.Control
-                      ref={inputEl}
-                      onChange={handleChange}
-                      value={values.username}
-                      placeholder="Ваш ник"
-                      name="username"
-                      autoComplete="username"
-                      required
-                      id="username"
-                      isInvalid={touched.username && errors.username}
-                    />
+                    <FloatingLabel controlId="floatingUsername" label="Ваш ник (admin)">
+                      <Form.Control
+                        ref={inputEl}
+                        onChange={handleChange}
+                        value={values.username}
+                        placeholder="Ваш ник"
+                        name="username"
+                        autoComplete="username"
+                        required
+                        isInvalid={touched.username && errors.username}
+                      />
+                    </FloatingLabel>
                   </Form.Group>
                   <Form.Group className="form-floating mb-4">
-                    <Form.Label htmlFor="password">Пароль (admin)</Form.Label>
-                    <Form.Control
-                      onChange={handleChange}
-                      value={values.password}
-                      placeholder="Пароль"
-                      name="password"
-                      autoComplete="current-password"
-                      required
-                      id="password"
-                      type="password"
-                      isInvalid={touched.password && errors.password}
-                    />
+                    <FloatingLabel controlId="floatingPassword" label="Пароль (admin)">
+                      <Form.Control
+                        onChange={handleChange}
+                        value={values.password}
+                        placeholder="Пароль"
+                        name="password"
+                        autoComplete="current-password"
+                        required
+                        type="password"
+                        isInvalid={touched.password && errors.password}
+                      />
+                    </FloatingLabel>
                     <Form.Control.Feedback type="invalid">Неверные имя пользователя или пароль</Form.Control.Feedback>
                   </Form.Group>
                   <Button type="submit" variant="outline-primary" className="w-100 mb-3 btn">Войти</Button>
@@ -93,7 +102,7 @@ const LoginPage = () => {
               <div className="card-footer p-4">
                 <div className="text-center">
                   <span>Нет аккаунта? </span>
-                  <Link to="signup" relative="/">Регистрация</Link>
+                  <Link to="../signup">Регистрация</Link>
                 </div>
               </div>
             </div>

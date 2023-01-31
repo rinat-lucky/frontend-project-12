@@ -13,12 +13,13 @@ const socket = io();
 const MessageForm = () => {
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentMessage = useSelector((state) => state.messages.currentMessage);
+  const currentUser = useSelector((state) => state.users.currentUser);
   const dispatch = useDispatch();
   const inputEl = useRef(null);
 
   useEffect(() => {
     inputEl.current.focus();
-  }, []);
+  }, [currentChannelId]);
 
   useEffect(() => {
     if (!Object.keys(currentMessage).length) return;
@@ -35,7 +36,7 @@ const MessageForm = () => {
       const newMessage = {
         channelId: currentChannelId,
         body: values.message,
-        username: 'admin',
+        username: currentUser.username,
       };
       dispatch(setCurrentMessage(newMessage));
       socket.emit('newMessage', newMessage);

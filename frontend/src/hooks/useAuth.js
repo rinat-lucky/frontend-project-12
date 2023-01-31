@@ -5,9 +5,9 @@ const useAuth = () => {
 
   return {
     isAuth,
-    setLogin(id) {
+    setLogin(jwt) {
       return new Promise((resolve) => {
-        localStorage.setItem('userId', id);
+        localStorage.setItem('userId', jwt);
         setAuth(true);
         resolve();
       });

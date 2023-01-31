@@ -1,8 +1,9 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentChannel } from "../slices/channelsSlice";
 
-const ChannelsList = (props) => {
-  const { channels, currentChannelId } = props;
+const ChannelsList = () => {
+  const channels = useSelector((state) => state.channels.list);
+  const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const dispatch = useDispatch();
 
   const channelsList = channels.map((channel) => {
