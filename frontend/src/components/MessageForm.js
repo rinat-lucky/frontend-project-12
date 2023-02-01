@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import io from 'socket.io-client';
 import { useFormik } from 'formik';
@@ -11,6 +11,7 @@ import { addMessage, setCurrentMessage } from '../slices/messagesSlice';
 const socket = io();
 
 const MessageForm = () => {
+  const [deliveredState, setDeliveredState] = useState('');
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentMessage = useSelector((state) => state.messages.currentMessage);
   const currentUser = useSelector((state) => state.users.currentUser);
@@ -29,38 +30,51 @@ const MessageForm = () => {
 
     return () => socket.off('newMessage');
   }, [currentMessage, dispatch]);
-  
+
   const formik = useFormik({
     initialValues: { message: '' },
     onSubmit:  (values, {resetForm}) => {
+      setDeliveredState('отправляется...');
       const newMessage = {
         channelId: currentChannelId,
         body: values.message,
         username: currentUser.username,
       };
       dispatch(setCurrentMessage(newMessage));
-      socket.emit('newMessage', newMessage);
+      socket.emit('newMessage', newMessage, (response) => {
+        console.log('RESPONSE', response);
+        if (response.status === 'ok') {
+          setDeliveredState('доставлено');
+        } else {
+          setDeliveredState('ошибка соединения');
+        }
+      });
       resetForm();
+      setTimeout(setDeliveredState, 2000);
     },
   });
 
   return (
-    <Form noValidate onSubmit={formik.handleSubmit} className="py-1 border rounded-2">
-      <InputGroup hasValidation>
-        <Form.Control
-          ref={inputEl}
-          onChange={formik.handleChange}
-          name="message"
-          id="message"
-          aria-label="Новое сообщение"
-          placeholder="Введите сообщение..."
-          className="border-0 p-0 ps-2"
-          type="text"
-          value={formik.values.message}
-        />
-        <SendMessageButton message={formik.values.message} />
-      </InputGroup>
-    </Form>
+    <>
+      <div className='small text-muted'>{deliveredState}</div>
+      <Form noValidate onSubmit={formik.handleSubmit} className="py-1 border rounded-2">
+        <InputGroup hasValidation>
+          <Form.Control
+            ref={inputEl}
+            onChange={formik.handleChange}
+            name="message"
+            id="message"
+            aria-label="Новое сообщение"
+            placeholder="Введите сообщение..."
+            className="border-0 p-0 ps-2"
+            type="text"
+            value={formik.values.message}
+          />
+          <SendMessageButton message={formik.values.message} />
+        </InputGroup>
+      </Form>
+    </>
+    
   );
 };
 

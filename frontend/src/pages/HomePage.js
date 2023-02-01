@@ -4,19 +4,19 @@ import { useNavigate } from 'react-router-dom';
 
 import { setChannelsList, setCurrentChannel } from "../slices/channelsSlice";
 import { setMessages } from "../slices/messagesSlice";
-import AuthConsumer from "../contexts/AuthContext";
 import ChatAPI from "../api/ChatAPI";
+import useAuth from "../hooks/useAuth";
 import Header from "../components/Header";
 import ChannelsPanel from "../components/ChannelsPanel";
 import MessagesPanel from "../components/MessagesPanel";
 
 const HomePage = () => {
-  const auth = AuthConsumer();
+  const auth = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem('userId');
   const api = useMemo(() => new ChatAPI(), []);
-  
+
   useEffect(() => {
     if (!jwt) return navigate('login');
     const fetchData = async () => {
@@ -28,15 +28,14 @@ const HomePage = () => {
     fetchData();
   }, [jwt, navigate, api, dispatch]);
 
-  useEffect(() => {
-    if (!jwt) return navigate('login');
-    const checkAuth = async () => await auth.setLogin(jwt);
-    checkAuth();
-  }, [jwt, navigate, auth]);
+  const handleLogOut = async () => {
+    await auth.setLogout();
+    navigate('login');
+  }; 
 
   return (
     <div className="d-flex flex-column h-100">
-      <Header logoutBtn={true} />
+      <Header onLogOut={handleLogOut} />
       <div className="container h-100 my-4 overflow-hidden rounded shadow">
         <div className="row h-100 bg-white flex-md-row">
         <ChannelsPanel />

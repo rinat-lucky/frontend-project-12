@@ -9,6 +9,13 @@ const MessagesList = ({ messages }) => {
     const currentChannel = channels.find((channel) => channel.id === currentChannelId);
     return (<b># {currentChannel.name}</b>);
   };
+
+  const renderMessages = () => {
+    if (!messages.length) return '';
+    return messages.map((item, i) => (
+      <div key={i}><b>{item.username}:</b> {item.body}</div>
+    ));
+  };
   
   return (
     <>
@@ -19,9 +26,7 @@ const MessagesList = ({ messages }) => {
         <span className="text-muted">{messages.length} сообщений</span>
       </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5 ">
-        {messages.length && messages.map((item) => (
-          <div key={item.id}><b>{item.username}:</b> {item.body}</div>
-        ))}
+        {renderMessages()}
       </div>
     </>
   );
