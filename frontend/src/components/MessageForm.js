@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import io from 'socket.io-client';
 import { useFormik } from 'formik';
+import io from 'socket.io-client';
 import uniqueId from 'lodash.uniqueid';
 import { Form, InputGroup } from 'react-bootstrap';
 
 import { SendMessageButton } from './buttons';
-import { addMessage, setCurrentMessage } from '../slices/messagesSlice';
+import { addMessage, setCurrentMessage, setDeliveredState } from '../slices/messagesSlice';
 
 const socket = io();
 
 const MessageForm = () => {
-  const [deliveredState, setDeliveredState] = useState('');
+  const deliveredState = useSelector((state) => state.messages.deliveredState);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentMessage = useSelector((state) => state.messages.currentMessage);
   const currentUser = useSelector((state) => state.users.currentUser);
@@ -20,7 +20,7 @@ const MessageForm = () => {
 
   useEffect(() => {
     inputEl.current.focus();
-  }, [currentChannelId]);
+  }, [currentChannelId, deliveredState]);
 
   useEffect(() => {
     if (!Object.keys(currentMessage).length) return;
@@ -34,7 +34,7 @@ const MessageForm = () => {
   const formik = useFormik({
     initialValues: { message: '' },
     onSubmit:  (values, {resetForm}) => {
-      setDeliveredState('отправляется...');
+      dispatch(setDeliveredState('отправляется...'));
       const newMessage = {
         channelId: currentChannelId,
         body: values.message,
@@ -42,15 +42,14 @@ const MessageForm = () => {
       };
       dispatch(setCurrentMessage(newMessage));
       socket.emit('newMessage', newMessage, (response) => {
-        console.log('RESPONSE', response);
         if (response.status === 'ok') {
-          setDeliveredState('доставлено');
+          dispatch(setDeliveredState('доставлено'));
         } else {
-          setDeliveredState('ошибка соединения');
+          dispatch(setDeliveredState('ошибка соединения'));
         }
       });
       resetForm();
-      setTimeout(setDeliveredState, 2000);
+      setTimeout(() => dispatch(setDeliveredState('')), 2000);
     },
   });
 
@@ -74,7 +73,6 @@ const MessageForm = () => {
         </InputGroup>
       </Form>
     </>
-    
   );
 };
 

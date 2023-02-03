@@ -77,7 +77,7 @@ const SignupPage = () => {
               <Form.Control
                 onChange={handleChange}
                 value={values.password}
-                placeholder="Не менее 6 символов"
+                placeholder="Не менее 5 символов"
                 name="password"
                 aria-describedby="passwordHelpBlock"
                 required

@@ -30,6 +30,6 @@ const MessagesList = ({ messages }) => {
       </div>
     </>
   );
-}
+};
 
 export default MessagesList;
