@@ -7,7 +7,7 @@ const ChannelsList = () => {
   const dispatch = useDispatch();
 
   const channelsList = channels.map((channel) => {
-    const baseClasses = 'w-100 rounded-0 text-start btn';
+    const baseClasses = 'w-100 rounded-0 text-start text-truncate btn';
     const classes = channel.id === currentChannelId ? `${baseClasses} btn-secondary` : baseClasses;
 
     return (
