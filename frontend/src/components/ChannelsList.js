@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { setCurrentChannel } from "../slices/channelsSlice";
 
 const ChannelsList = () => {
@@ -7,15 +8,23 @@ const ChannelsList = () => {
   const dispatch = useDispatch();
 
   const channelsList = channels.map((channel) => {
-    const baseClasses = 'w-100 rounded-0 text-start text-truncate btn';
-    const classes = channel.id === currentChannelId ? `${baseClasses} btn-secondary` : baseClasses;
+    const classes = 'w-100 rounded-0 text-start text-truncate border-0';
+    const variant = channel.id === currentChannelId ? 'secondary' : null;
 
     return (
       <li key={channel.id} className="nav-item w-100">
-        <button onClick={() => dispatch(setCurrentChannel(channel.id))} type="button" className={classes}>
-          <span className="me-1">#</span>
-          {channel.name}
-        </button>
+        <Dropdown as={ButtonGroup} className='d-flex'>
+          <Button onClick={() => dispatch(setCurrentChannel(channel.id))} variant={variant} className={classes}># {channel.name}</Button>
+          {channel.removable && (
+            <>
+              <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} />
+              <Dropdown.Menu>
+                <Dropdown.Item>Удалить</Dropdown.Item>
+                <Dropdown.Item>Переименовать</Dropdown.Item>
+              </Dropdown.Menu>
+            </>
+          )}
+        </Dropdown>
       </li>
     );
   });
