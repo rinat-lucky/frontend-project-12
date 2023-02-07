@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
-import { setCurrentChannel } from "../slices/channelsSlice";
+import { setActiveModal, setCurrentChannel } from "../slices/channelsSlice";
 
 const ChannelsList = () => {
   const channels = useSelector((state) => state.channels.list);
@@ -19,8 +19,8 @@ const ChannelsList = () => {
             <>
               <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} />
               <Dropdown.Menu>
-                <Dropdown.Item>Удалить</Dropdown.Item>
-                <Dropdown.Item>Переименовать</Dropdown.Item>
+                <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'remove', channelId: channel.id}))}>Удалить</Dropdown.Item>
+                <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'rename', channelId: channel.id}))}>Переименовать</Dropdown.Item>
               </Dropdown.Menu>
             </>
           )}

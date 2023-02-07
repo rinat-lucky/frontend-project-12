@@ -9,9 +9,7 @@ import useAuth from "../hooks/useAuth";
 import Header from "../components/Header";
 import ChannelsPanel from "../components/ChannelsPanel";
 import MessagesPanel from "../components/MessagesPanel";
-import AddChannelModal from "../components/AddChannelModal";
-import RenameChannelModal from "../components/RenameChannelModal";
-import RemoveChannelModal from "../components/RemoveChannelModal";
+import ChannelModal from "../components/ChannelModal";
 
 const HomePage = () => {
   const auth = useAuth();
@@ -37,19 +35,6 @@ const HomePage = () => {
     navigate('login');
   }; 
 
-  const renderModal = () => {
-    switch (activeModal) {
-      case 'add':
-        return (<AddChannelModal />);
-      case 'rename':
-        return (<RenameChannelModal />);
-      case 'remove':
-        return (<RemoveChannelModal />);
-      default:
-        throw new Error(`Unknown type of modal: ${activeModal}`);
-    }
-  };
-
   return (
     <>
       <div className="d-flex flex-column h-100">
@@ -61,7 +46,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      {activeModal && renderModal()}
+      {activeModal && <ChannelModal />}
     </>
   );
 };
