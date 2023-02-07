@@ -1,21 +1,14 @@
-import { useDispatch } from 'react-redux';
-import { setCurrentUser } from '../slices/usersSlice';
-
 const useAuth = () => {
-  const dispatch = useDispatch();
-
   return {
     setAuth(jwt, user) {
       return new Promise((resolve) => {
-        localStorage.setItem('userId', jwt);
-        dispatch(setCurrentUser(user));
+        localStorage.setItem('user', JSON.stringify({token: jwt, username: user.username}));
         resolve();
       });
     },
     setLogout() {
       return new Promise((resolve) => {
-        localStorage.removeItem('userId');
-        dispatch(setCurrentUser({}));
+        localStorage.removeItem('user');
         resolve();
       });
     },

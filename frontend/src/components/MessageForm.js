@@ -14,7 +14,7 @@ const MessageForm = () => {
   const deliveredState = useSelector((state) => state.messages.deliveredState);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const currentMessage = useSelector((state) => state.messages.currentMessage);
-  const currentUser = useSelector((state) => state.users.currentUser);
+  const userInfo = JSON.parse(localStorage.getItem('user'));
   const dispatch = useDispatch();
   const inputEl = useRef(null);
 
@@ -38,7 +38,7 @@ const MessageForm = () => {
       const newMessage = {
         channelId: currentChannelId,
         body: values.message,
-        username: currentUser.username,
+        username: userInfo.username,
       };
       dispatch(setCurrentMessage(newMessage));
       socket.emit('newMessage', newMessage, (response) => {

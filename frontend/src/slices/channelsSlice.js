@@ -28,7 +28,8 @@ const channelsSlice = createSlice({
       targetChannel.name = payload.name;
     },
     removeChannel: (state, { payload }) => {
-      state.list = state.list.filter((channel) => channel.id !== payload.id)
+      state.list = state.list.filter((channel) => channel.id !== payload.id);
+      // + удалять сообщения этого канала
     },
   },
 });

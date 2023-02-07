@@ -17,7 +17,7 @@ const ChannelsList = () => {
           <Button onClick={() => dispatch(setCurrentChannel(channel.id))} variant={variant} className={classes}># {channel.name}</Button>
           {channel.removable && (
             <>
-              <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} />
+              <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className='border-0' />
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'remove', channelId: channel.id}))}>Удалить</Dropdown.Item>
                 <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'rename', channelId: channel.id}))}>Переименовать</Dropdown.Item>

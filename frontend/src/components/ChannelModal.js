@@ -6,7 +6,7 @@ import { setActiveModal, setCurrentChannel, addChannel, renameChannel, removeCha
 import uniqueId from 'lodash.uniqueid';
 import * as yup from 'yup';
 
-const defaultChannelID = 1;
+const DEFAULT_CHANNEL_ID = 1;
 
 const ChannelModal = () => {
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
@@ -52,7 +52,7 @@ const ChannelModal = () => {
       }
       case 'remove': {
         if (currentChannelId === targetChannel.id) {
-          dispatch(setCurrentChannel(defaultChannelID));
+          dispatch(setCurrentChannel(DEFAULT_CHANNEL_ID));
         }
         dispatch(removeChannel(targetChannel));
         return dispatch(setActiveModal(null));
@@ -114,7 +114,7 @@ const ChannelModal = () => {
               <Form.Control
                 name="channelName"
                 id="channelName"
-                className="mb-2"
+                className="mb-2 w-100"
                 ref={inputEl}
                 onChange={form.handleChange}
                 value={form.values.channelName}

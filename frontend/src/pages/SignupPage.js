@@ -1,5 +1,4 @@
 import { useEffect, useRef, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
@@ -22,11 +21,11 @@ const SignupPage = () => {
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const api = useMemo(() => new ChatAPI(), []);
-  const currentUser = useSelector((state) => state.users.currentUser);
+  const userInfo = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    if (Object.keys(currentUser).length) navigate('/');
-  }, [currentUser, navigate]);
+    if (userInfo) navigate('/');
+  }, [userInfo, navigate]);
 
   useEffect(() => {
     inputEl.current.focus();
