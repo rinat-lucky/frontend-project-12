@@ -33,11 +33,11 @@ const ChannelModal = () => {
     inputEl.current.focus();
   }, []);
 
-  const handleSubmit = (channelName) => {
+  const handleSubmitForm = (channelName) => {
     switch (activeModal.type) {
       case 'add': {
         const newChannel = {
-          id: Number(uniqueId()) + 2,
+          id: (Number(uniqueId()) + 2),
           name: channelName,
           removable: true,
         };
@@ -66,7 +66,7 @@ const ChannelModal = () => {
     initialValues: initialValue,
     validationSchema: schema,
     onSubmit: ({ channelName }, { resetForm }) => {
-      handleSubmit(channelName);
+      handleSubmitForm(channelName);
       dispatch(setActiveModal(null));
       resetForm();
     },
@@ -101,7 +101,7 @@ const ChannelModal = () => {
               <Button
                 variant='danger'
                 type="submit"
-                onClick={handleSubmit}
+                onClick={handleSubmitForm}
               >
                 Удалить
               </Button>

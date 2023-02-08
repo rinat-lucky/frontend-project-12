@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 
-const Header = ({ onLogOut }) => {
+const Header = memo(({ onLogOut }) => {
   return (
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
@@ -10,6 +11,6 @@ const Header = ({ onLogOut }) => {
       </div>
     </nav>
   );
-};
+});
 
 export default Header;

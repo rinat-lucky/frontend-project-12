@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { removeChannel } from './channelsSlice';
 
 const initialState = {
   collection: [],
@@ -10,18 +11,24 @@ const messagesSlice = createSlice({
   name: 'messages',
   initialState,
   reducers: {
-    setMessages: (state, action) => {
-      state.collection = action.payload;
+    setMessages: (state, { payload }) => {
+      state.collection = payload;
     },
-    addMessage: (state, action) => {
-      state.collection.push(action.payload);
+    addMessage: (state, { payload }) => {
+      state.collection.push(payload);
     },
-    setCurrentMessage: (state, action) => {
-      state.currentMessage = action.payload;
+    setCurrentMessage: (state, { payload }) => {
+      state.currentMessage = payload;
     },
-    setDeliveredState: (state, action) => {
-      state.deliveredState = action.payload;
+    setDeliveredState: (state, { payload }) => {
+      state.deliveredState = payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(removeChannel, (state, { payload }) => {
+      const restMessages = state.collection.filter((m) => m.channelId !== payload.id);
+      state.collection = restMessages;
+    });
   },
 });
 
