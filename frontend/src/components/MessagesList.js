@@ -13,7 +13,7 @@ const MessagesList = ({ messages }) => {
   const renderMessages = () => {
     if (!messages.length) return '';
     return messages.map((item, i) => (
-      <div key={i}><b>{item.username}:</b> {item.body}</div>
+      <div key={i} className='text-break'><b>{item.username}:</b> {item.body}</div>
     ));
   };
   
