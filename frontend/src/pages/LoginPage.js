@@ -9,6 +9,8 @@ import ChatAPI from '../api/ChatAPI';
 import useAuth from '../hooks/useAuth';
 
 const imgURL = "https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg";
+
+// https://github.com/jquense/yup/tree/pre-v1#using-a-custom-locale-dictionary
 const schema = yup.object().shape({
   username: yup.string().min(3).max(20).required(),
   password: yup.string().min(5).required(),

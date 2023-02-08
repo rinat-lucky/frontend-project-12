@@ -1,27 +1,26 @@
 import { useEffect, useRef, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { addNewUser } from '../slices/usersSlice';
 
 import AuthContainer from '../components/AuthContainer';
 import ChatAPI from '../api/ChatAPI';
 import useAuth from '../hooks/useAuth';
 
 const imgURL = "https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg";
-const schema = yup.object().shape({
-  username: yup.string().min(3).max(20).required(),
-  password: yup.string().min(5).required(),
-  confirmPassword: yup.string().required()
-    .oneOf([yup.ref('password'), null]),
-});
 
 const SignupPage = () => {
   const auth = useAuth();
   const inputEl = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const api = useMemo(() => new ChatAPI(), []);
   const userInfo = JSON.parse(localStorage.getItem('user'));
+  const users = useSelector((state) => state.users.list);
+  const usersNames = users.map((u) => u.username);
 
   useEffect(() => {
     if (userInfo) navigate('/');
@@ -30,6 +29,15 @@ const SignupPage = () => {
   useEffect(() => {
     inputEl.current.focus();
   }, []);
+
+  // https://github.com/jquense/yup/tree/pre-v1#using-a-custom-locale-dictionary
+  const schema = yup.object().shape({
+    username: yup.string().min(3).max(20).required()
+      .notOneOf(usersNames),
+    password: yup.string().min(6).required(),
+    confirmPassword: yup.string().required()
+      .oneOf([yup.ref('password'), null]),
+  });
   
   const formik = useFormik({
     initialValues: {
@@ -42,6 +50,7 @@ const SignupPage = () => {
       const jwt = await api.signUp(values);
       const { confirmPassword, ...userData } = values;
       await auth.setAuth(jwt, userData);
+      dispatch(addNewUser(userData));
     },
   });
   
@@ -76,7 +85,7 @@ const SignupPage = () => {
               <Form.Control
                 onChange={handleChange}
                 value={values.password}
-                placeholder="Не менее 5 символов"
+                placeholder="Не менее 6 символов"
                 name="password"
                 aria-describedby="passwordHelpBlock"
                 required
