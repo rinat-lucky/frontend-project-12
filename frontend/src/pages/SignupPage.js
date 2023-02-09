@@ -1,5 +1,5 @@
-import { useEffect, useRef, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useRef, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
@@ -10,8 +10,7 @@ import { addNewUser } from '../slices/usersSlice';
 import AuthContainer from '../components/AuthContainer';
 import ChatAPI from '../api/ChatAPI';
 import useAuth from '../hooks/useAuth';
-
-const imgURL = "https://hsto.org/getpro/moikrug/uploads/company/100/006/614/6/logo/medium_733e8366d5e14ff8539f5fccc8c058da.jpg";
+import img from '../assets/login.jpg';
 
 const SignupPage = () => {
   const auth = useAuth();
@@ -20,8 +19,7 @@ const SignupPage = () => {
   const dispatch = useDispatch();
   const api = useMemo(() => new ChatAPI(), []);
   const userInfo = JSON.parse(localStorage.getItem('user'));
-  const users = useSelector((state) => state.users.list);
-  const usersNames = users.map((u) => u.username);
+  const [ authFailed, setAuthFailedText ] = useState('');
 
   useEffect(() => {
     if (userInfo) navigate('/');
@@ -36,14 +34,12 @@ const SignupPage = () => {
       min: 'field_too_short',
       max: 'field_too_big',
       required: 'field_empty',
-      notOneOf: 'field_not_unique',
       oneOf: 'field_must_match',
     },
   });
 
   const schema = yup.object().shape({
-    username: yup.string().min(3).max(20).required()
-      .notOneOf(usersNames),
+    username: yup.string().min(3).max(20).required(),
     password: yup.string().min(6).required(),
     confirmPassword: yup.string().required()
       .oneOf([yup.ref('password')]),
@@ -57,11 +53,14 @@ const SignupPage = () => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      const jwt = await api.signUp(values);
-      const { confirmPassword, ...userData } = values;
-      await auth.setAuth(jwt, userData);
-      // при неудачной регистрации/авторизации принудительно вызывать ошибку
-      dispatch(addNewUser(userData));
+      try {
+        const jwt = await api.signUp(values);
+        const { confirmPassword, ...userData } = values;
+        await auth.setAuth(jwt, userData);
+        dispatch(addNewUser(userData));
+      } catch (_) {
+        setAuthFailedText('Такой пользователь уже существует');
+      }
     },
   });
   
@@ -71,7 +70,7 @@ const SignupPage = () => {
     <AuthContainer>
       <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
         <div>
-          <Image src={imgURL} roundedCircle={true} alt="Регистрация" />
+          <Image src={img} roundedCircle={true} alt="Регистрация" />
         </div>
 
         <Form onSubmit={handleSubmit} className="w-50">
@@ -83,7 +82,7 @@ const SignupPage = () => {
                 value={values.username}
                 name="username"
                 placeholder='Имя пользователя'
-                isInvalid={touched.username && errors.username}
+                isInvalid={authFailed || (touched.username && errors.username)}
               />
               <Form.Control.Feedback type="invalid" tooltip>{errors.username}</Form.Control.Feedback>
             </FloatingLabel>
@@ -95,7 +94,7 @@ const SignupPage = () => {
                 aria-describedby="passwordHelpBlock"
                 type="password"
                 placeholder='Пароль'
-                isInvalid={touched.password && errors.password}
+                isInvalid={authFailed || (touched.password && errors.password)}
               />
               <Form.Control.Feedback type="invalid" tooltip>{errors.password}</Form.Control.Feedback>
             </FloatingLabel>
@@ -106,9 +105,9 @@ const SignupPage = () => {
                 onChange={handleChange}
                 value={values.confirmPassword}
                 placeholder='Подтвердите пароль'
-                isInvalid={touched.confirmPassword && errors.confirmPassword}
+                isInvalid={authFailed || (touched.confirmPassword && errors.confirmPassword)}
               />
-              <Form.Control.Feedback type="invalid" tooltip>{errors.confirmPassword}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid" tooltip>{authFailed || errors.confirmPassword}</Form.Control.Feedback>
             </FloatingLabel>
           <Button type="submit" className="w-100" variant="outline-primary">Зарегистрироваться</Button>
         </Form>
