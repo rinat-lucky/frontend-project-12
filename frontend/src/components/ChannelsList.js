@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { setActiveModal, setCurrentChannel } from "../slices/channelsSlice";
+import { useTranslation } from "react-i18next";
 
 const ChannelsList = () => {
   const channels = useSelector((state) => state.channels.list);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const channelsList = channels.map((channel) => {
     const classes = 'w-100 rounded-0 text-start text-truncate border-0';
@@ -19,8 +21,16 @@ const ChannelsList = () => {
             <>
               <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className='border-0 form-control w-auto' />
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'remove', channelId: channel.id}))}>Удалить</Dropdown.Item>
-                <Dropdown.Item onClick={() => dispatch(setActiveModal({type: 'rename', channelId: channel.id}))}>Переименовать</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => dispatch(setActiveModal({type: 'remove', channelId: channel.id}))}
+                >
+                  {t('channelsButton.remove')}
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => dispatch(setActiveModal({type: 'rename', channelId: channel.id}))}
+                >
+                  {t('channelsButton.rename')}
+                </Dropdown.Item>
               </Dropdown.Menu>
             </>
           )}

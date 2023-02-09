@@ -52,7 +52,7 @@ const LoginPage = () => {
     <AuthContainer>
       <div className="card-body row p-5">
         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-          <Image src={img} alt="Войти" roundedCircle={true} />
+          <Image src={img} alt="Авторизация" roundedCircle={true} />
         </div>
 
         <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">

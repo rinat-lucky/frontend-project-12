@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import io from 'socket.io-client';
 import uniqueId from 'lodash.uniqueid';
 import { Form, InputGroup } from 'react-bootstrap';
+import { useTranslation } from "react-i18next";
 
 import { SendMessageButton } from './buttons';
 import { addMessage, setCurrentMessage, setDeliveredState } from '../slices/messagesSlice';
@@ -17,6 +18,7 @@ const MessageForm = () => {
   const userInfo = JSON.parse(localStorage.getItem('user'));
   const dispatch = useDispatch();
   const inputEl = useRef(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     inputEl.current.focus();
@@ -34,7 +36,7 @@ const MessageForm = () => {
   const formik = useFormik({
     initialValues: { message: '' },
     onSubmit:  (values, {resetForm}) => {
-      dispatch(setDeliveredState('отправляется...'));
+      dispatch(setDeliveredState(t('messagesStatus.sending')));
       const newMessage = {
         channelId: currentChannelId,
         body: values.message,
@@ -43,9 +45,9 @@ const MessageForm = () => {
       dispatch(setCurrentMessage(newMessage));
       socket.emit('newMessage', newMessage, (response) => {
         if (response.status === 'ok') {
-          dispatch(setDeliveredState('доставлено'));
+          dispatch(setDeliveredState(t('messagesStatus.delivered')));
         } else {
-          dispatch(setDeliveredState('ошибка соединения'));
+          dispatch(setDeliveredState(t('messagesStatus.errorNetwork')));
         }
       });
       resetForm();
@@ -63,8 +65,8 @@ const MessageForm = () => {
             onChange={formik.handleChange}
             name="message"
             id="message"
-            aria-label="Новое сообщение"
-            placeholder="Введите сообщение..."
+            aria-label={t('messageLabel')}
+            placeholder={t('messagePlaceholder')}
             className="border-0 p-0 ps-2"
             type="text"
             value={formik.values.message}
