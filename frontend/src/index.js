@@ -1,12 +1,9 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
+import init from './init';
 
-import App from './components/App';
+const app = async () => {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(await init());
+};
 
-import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <App />
-);
+app();

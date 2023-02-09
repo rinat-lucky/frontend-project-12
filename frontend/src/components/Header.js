@@ -1,13 +1,16 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
+import { useTranslation } from "react-i18next";
 
 const Header = memo(({ onLogOut }) => {
+  const { t } = useTranslation();
+  
   return (
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
-        <Link className="navbar-brand" to="/">Hexlet Chat</Link>
-        { onLogOut && <Button onClick={onLogOut}>Выйти</Button> }
+        <Link className="navbar-brand" to="/">{t('header.appTitle')}</Link>
+        { onLogOut && <Button onClick={onLogOut}>{t('header.logOutButton')}</Button> }
       </div>
     </nav>
   );

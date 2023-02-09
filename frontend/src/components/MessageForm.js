@@ -24,7 +24,7 @@ const MessageForm = () => {
 
   useEffect(() => {
     if (!Object.keys(currentMessage).length) return;
-    socket.on('newMessage', currentMessage => {
+    socket.on('newMessage', (currentMessage) => {
       dispatch(addMessage({...currentMessage, id: Number(uniqueId())}));
     });
 
