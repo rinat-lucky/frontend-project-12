@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+
 import { addNewUser } from '../slices/usersSlice';
 
 import AuthContainer from '../components/AuthContainer';
@@ -30,13 +31,22 @@ const SignupPage = () => {
     inputEl.current.focus();
   }, []);
 
-  // https://github.com/jquense/yup/tree/pre-v1#using-a-custom-locale-dictionary
+  yup.setLocale({
+    string: {
+      min: 'field_too_short',
+      max: 'field_too_big',
+      required: 'field_empty',
+      notOneOf: 'field_not_unique',
+      oneOf: 'field_must_match',
+    },
+  });
+
   const schema = yup.object().shape({
     username: yup.string().min(3).max(20).required()
       .notOneOf(usersNames),
     password: yup.string().min(6).required(),
     confirmPassword: yup.string().required()
-      .oneOf([yup.ref('password'), null]),
+      .oneOf([yup.ref('password')]),
   });
   
   const formik = useFormik({
@@ -50,6 +60,7 @@ const SignupPage = () => {
       const jwt = await api.signUp(values);
       const { confirmPassword, ...userData } = values;
       await auth.setAuth(jwt, userData);
+      // при неудачной регистрации/авторизации принудительно вызывать ошибку
       dispatch(addNewUser(userData));
     },
   });
@@ -65,51 +76,40 @@ const SignupPage = () => {
 
         <Form onSubmit={handleSubmit} className="w-50">
           <h1 className="text-center mb-4">Регистрация</h1>
-          <Form.Group className="mb-3">
-            <FloatingLabel controlId="floatingUsername" label="Имя пользователя">
+            <FloatingLabel controlId="floatingUsername" label="Имя пользователя" className="mb-3">
               <Form.Control
                 ref={inputEl}
                 onChange={handleChange}
                 value={values.username}
-                placeholder="От 3 до 20 символов"
                 name="username"
-                autoComplete="username"
-                required
+                placeholder='Имя пользователя'
                 isInvalid={touched.username && errors.username}
               />
+              <Form.Control.Feedback type="invalid" tooltip>{errors.username}</Form.Control.Feedback>
             </FloatingLabel>
-            <Form.Control.Feedback type="invalid" tooltip>Обязательное поле</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <FloatingLabel controlId="floatingPassword" label="Пароль">
+            <FloatingLabel controlId="floatingPassword" label="Пароль" className="mb-3">
               <Form.Control
                 onChange={handleChange}
                 value={values.password}
-                placeholder="Не менее 6 символов"
                 name="password"
                 aria-describedby="passwordHelpBlock"
-                required
-                autoComplete="new-password"
                 type="password"
+                placeholder='Пароль'
                 isInvalid={touched.password && errors.password}
               />
+              <Form.Control.Feedback type="invalid" tooltip>{errors.password}</Form.Control.Feedback>
             </FloatingLabel>
-            <Form.Control.Feedback type="invalid" tooltip>Обязательное поле</Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-4">
-            <FloatingLabel controlId="floatingConfirmPassword" label="Подтвердите пароль">
+            <FloatingLabel controlId="floatingConfirmPassword" label="Подтвердите пароль" className="mb-4">
               <Form.Control
-                placeholder="Пароли должны совпадать"
                 name="confirmPassword"
-                required
-                autoComplete="new-password"
                 type="password"
                 onChange={handleChange}
                 value={values.confirmPassword}
+                placeholder='Подтвердите пароль'
+                isInvalid={touched.confirmPassword && errors.confirmPassword}
               />
+              <Form.Control.Feedback type="invalid" tooltip>{errors.confirmPassword}</Form.Control.Feedback>
             </FloatingLabel>
-            <Form.Control.Feedback type="invalid" tooltip>Пароли должны совпадать</Form.Control.Feedback>
-          </Form.Group>
           <Button type="submit" className="w-100" variant="outline-primary">Зарегистрироваться</Button>
         </Form>
 

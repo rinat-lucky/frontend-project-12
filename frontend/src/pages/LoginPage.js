@@ -39,6 +39,7 @@ const LoginPage = () => {
     validationSchema: schema,
     onSubmit: async (values) => {
       const jwt = await api.logIn(values);
+      // при неудачной регистрации/авторизации принудительно вызывать ошибку
       await auth.setAuth(jwt, values);
     },
   });
@@ -54,35 +55,31 @@ const LoginPage = () => {
 
         <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
           <h1 className="text-center mb-4">Войти</h1>
-          <Form.Group className="form-floating mb-3">
-            <FloatingLabel controlId="floatingUsername" label="Ваш ник (admin)">
+            <FloatingLabel controlId="floatingUsername" label="Ваш ник (admin)" className='mb-3'>
               <Form.Control
                 ref={inputEl}
                 onChange={handleChange}
                 value={values.username}
-                placeholder="Ваш ник"
                 name="username"
                 autoComplete="username"
-                required
+                placeholder='Ваш ник (admin)'
                 isInvalid={touched.username && errors.username}
               />
             </FloatingLabel>
-          </Form.Group>
-          <Form.Group className="form-floating mb-4">
-            <FloatingLabel controlId="floatingPassword" label="Пароль (admin)">
+            <FloatingLabel controlId="floatingPassword" label="Пароль (admin)" className='mb-4'>
               <Form.Control
                 onChange={handleChange}
                 value={values.password}
-                placeholder="Пароль"
                 name="password"
                 autoComplete="current-password"
-                required
                 type="password"
+                placeholder='Пароль (admin)'
                 isInvalid={touched.password && errors.password}
               />
-            </FloatingLabel>
-            <Form.Control.Feedback type="invalid">Неверные имя пользователя или пароль</Form.Control.Feedback>
-          </Form.Group>
+              {(!!(errors.username || errors.password)) && (
+                <Form.Control.Feedback type='invalid'>Неверные имя пользователя или пароль</Form.Control.Feedback>
+              )}
+            </FloatingLabel> 
           <Button type="submit" variant="outline-primary" className="w-100 mb-3 btn">Войти</Button>
         </Form>
       </div>
