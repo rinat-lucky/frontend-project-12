@@ -4,7 +4,7 @@ import MessageForm from "../components/MessageForm";
 
 const MessagesPanel = () => {
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
-  const messages = useSelector((state) => state.messages.collection);
+  const messages = useSelector((state) => state.messages.list);
   const visibleMessages = messages.filter((m) => Number(m.channelId) === Number(currentChannelId));
   
   return (

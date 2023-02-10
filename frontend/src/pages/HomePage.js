@@ -9,14 +9,14 @@ import useAuth from "../hooks/useAuth";
 import Header from "../components/Header";
 import ChannelsPanel from "../components/ChannelsPanel";
 import MessagesPanel from "../components/MessagesPanel";
-import ChannelModal from "../components/ChannelModal";
+import ModalContainer from "../components/ModalContainer";
+
+const userInfo = JSON.parse(localStorage.getItem('user'));
 
 const HomePage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userInfo = JSON.parse(localStorage.getItem('user'));
-
   const api = useMemo(() => new ChatAPI(), []);
   const activeModal = useSelector((state) => state.channels.activeModal);
 
@@ -47,7 +47,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      {activeModal && <ChannelModal />}
+      {activeModal && <ModalContainer />}
     </>
   );
 };

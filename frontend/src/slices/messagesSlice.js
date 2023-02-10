@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { removeChannel } from './channelsSlice';
 
 const initialState = {
-  collection: [],
+  list: [],
   currentMessage: {},
   deliveredState: '',
 };
@@ -12,10 +12,10 @@ const messagesSlice = createSlice({
   initialState,
   reducers: {
     setMessages: (state, { payload }) => {
-      state.collection = payload;
+      state.list = payload;
     },
     addMessage: (state, { payload }) => {
-      state.collection.push(payload);
+      state.list.push(payload);
     },
     setCurrentMessage: (state, { payload }) => {
       state.currentMessage = payload;
@@ -26,8 +26,8 @@ const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(removeChannel, (state, { payload }) => {
-      const restMessages = state.collection.filter((m) => m.channelId !== payload.id);
-      state.collection = restMessages;
+      const restMessages = state.list.filter((m) => m.channelId !== payload.id);
+      state.list = restMessages;
     });
   },
 });

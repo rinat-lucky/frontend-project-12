@@ -33,13 +33,13 @@ const MessageForm = () => {
     return () => socket.off('newMessage');
   }, [currentMessage, dispatch]);
 
-  const formik = useFormik({
+  const f = useFormik({
     initialValues: { message: '' },
-    onSubmit:  (values, {resetForm}) => {
+    onSubmit:  ({ message }, { resetForm }) => {
       dispatch(setDeliveredState(t('messagesStatus.sending')));
       const newMessage = {
         channelId: currentChannelId,
-        body: values.message,
+        body: message,
         username: userInfo.username,
       };
       dispatch(setCurrentMessage(newMessage));
@@ -47,7 +47,7 @@ const MessageForm = () => {
         if (response.status === 'ok') {
           dispatch(setDeliveredState(t('messagesStatus.delivered')));
         } else {
-          dispatch(setDeliveredState(t('messagesStatus.errorNetwork')));
+          dispatch(setDeliveredState(t('error.network')));
         }
       });
       resetForm();
@@ -58,20 +58,20 @@ const MessageForm = () => {
   return (
     <>
       <div className='small text-muted'>{deliveredState}</div>
-      <Form noValidate onSubmit={formik.handleSubmit} className="py-1 border rounded-2">
+      <Form noValidate onSubmit={f.handleSubmit} className="py-1 border rounded-2">
         <InputGroup hasValidation>
           <Form.Control
             ref={inputEl}
-            onChange={formik.handleChange}
+            onChange={f.handleChange}
             name="message"
             id="message"
             aria-label={t('messageLabel')}
             placeholder={t('messagePlaceholder')}
             className="border-0 p-0 ps-2"
             type="text"
-            value={formik.values.message}
+            value={f.values.message}
           />
-          <SendMessageButton message={formik.values.message} />
+          <SendMessageButton message={f.values.message} />
         </InputGroup>
       </Form>
     </>
