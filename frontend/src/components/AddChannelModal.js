@@ -3,8 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Button, Form } from "react-bootstrap";
 import { useFormik } from 'formik';
+import io from 'socket.io-client';
 import { setActiveModal, addChannel } from "../slices/channelsSlice";
 import { useSchemaNaming } from '../hooks/useSchema';
+
+const socket = io();
 
 const AddChannelModal = () => {
   const channels = useSelector((state) => state.channels.list);
@@ -16,13 +19,23 @@ const AddChannelModal = () => {
     inputEl.current.focus();
   }, []);
 
+  // некорректное поведение - создается несколько идентичных каналов
+  useEffect(() => {
+    socket.on('newChannel', (newChannel) => {
+      console.log('add channel');
+      dispatch(addChannel(newChannel)); 
+    });
+
+    // return () => socket.off();
+  }, []);
+
   const f = useFormik({
     initialValues: { channelName: '' },
     validationSchema: useSchemaNaming(channels),
     onSubmit: ({ channelName }, { resetForm }) => {
-      dispatch(addChannel(channelName));
       dispatch(setActiveModal(null));
       resetForm();
+      socket.emit('newChannel', { name: channelName });
     },
   });
 

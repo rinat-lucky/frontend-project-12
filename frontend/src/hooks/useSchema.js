@@ -38,7 +38,7 @@ export const useSchemaLogin = () => {
       .max(20, t('error.tooLong'))
       .required(t('error.required')),
     password: yup.string()
-      .min(6, t('error.tooShort_6'))
+      .min(5, t('error.tooShort_5'))
       .required(t('error.required')),
   });
 };

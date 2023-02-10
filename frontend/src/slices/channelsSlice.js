@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import uniqueId from 'lodash.uniqueid';
 
 const initialState = {
   list: [],
@@ -21,13 +20,8 @@ const channelsSlice = createSlice({
       state.activeModal = payload;
     },
     addChannel: (state, { payload }) => {
-      const newChannel = {
-        id: (Number(uniqueId()) + 2),
-        name: payload,
-        removable: true,
-      };
-      state.list.push(newChannel);
-      state.currentChannelId = newChannel.id;
+      state.list.push(payload);
+      state.currentChannelId = payload.id;
     },
     renameChannel: (state, { payload }) => {
       const targetChannel = state.list.find((channel) => channel.id === payload.targetChannelID);
