@@ -4,22 +4,23 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 
-import { useSchemaLogin } from '../hooks/useSchema';
-import AuthContainer from '../components/AuthContainer';
-import ChatAPI from '../api/ChatAPI';
-import { useAuth } from '../hooks';
-import img from '../assets/login.jpg';
+import { useSchemaLogin } from '../../hooks/useSchema';
+import AuthContainer from '../AuthContainer';
+import AuthAPI from '../../api/AuthAPI';
+import { useAuth } from '../../hooks';
+import { routesApp } from "../../routes";
+import img from '../../assets/login.jpg';
 
 const LoginPage = () => {
   const auth = useAuth();
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const api = useMemo(() => new ChatAPI(), []);
+  const api = useMemo(() => new AuthAPI(), []);
   const [ authFailedText, setAuthFailedText ] = useState('');
 
   useEffect(() => {
-    if (auth.user) navigate('/');
+    if (auth.user) navigate(routesApp.homePage);
   }, [auth.user]);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ const LoginPage = () => {
       <div className="card-footer p-4">
         <div className="text-center">
           <span>{t('loginPage.haveNotAccount')}</span>
-          <Link to="../signup">{t('loginPage.registerLink')}</Link>
+          <Link to={routesApp.signupPage}>{t('loginPage.registerLink')}</Link>
         </div>
       </div>
     </AuthContainer>

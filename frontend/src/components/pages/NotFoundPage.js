@@ -1,7 +1,7 @@
 import { useRouteError, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Header from "../components/Header";
-import img from '../assets/login.jpg';
+import Header from "../Header";
+import img from '../../assets/login.jpg';
 
 const NotFoundPage = () => {
   const { t } = useTranslation();

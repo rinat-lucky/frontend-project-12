@@ -4,11 +4,6 @@ import { Modal, Button } from "react-bootstrap";
 import { setActiveModal } from "../../slices/channelsSlice";
 import getModal from '../modals';
 
-const renderModal = (action) => {
-  const Component = getModal(action);
-  return <Component />;
-};
-
 const ModalContainer = () => {
   const activeModal = useSelector((state) => state.channels.activeModal);
   const dispatch = useDispatch();
@@ -33,7 +28,7 @@ const ModalContainer = () => {
         />
       </Modal.Header>
       <Modal.Body>
-        {renderModal(activeModal.type)}
+        {getModal(activeModal.type)}
       </Modal.Body>
     </Modal>
   );

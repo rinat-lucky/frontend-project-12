@@ -16,7 +16,9 @@ const ChannelsList = () => {
 
     const optionButtons = (
       <>
-        <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className='border-0 form-control w-auto' />
+        <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className='border-0 w-auto'>
+          <span className="visually-hidden">{t('channelSettings')}</span>
+        </Dropdown.Toggle>
         <Dropdown.Menu>
           {channelOptions.map((opt, i) => (
             <Dropdown.Item onClick={() => dispatch(setActiveModal({type: opt, channelId: channel.id}))} key={i}>

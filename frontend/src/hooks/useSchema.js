@@ -6,7 +6,7 @@ export const useSchemaNaming = (channels) => {
   const channelsNames = channels.map((c) => c.name);
 
   return yup.object().shape({
-    channelName: yup.mixed()
+    name: yup.mixed()
       .required(t('error.required'))
       .notOneOf(channelsNames, t('error.notUnique')),
   });

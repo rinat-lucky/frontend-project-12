@@ -3,9 +3,9 @@ import RenameChannel from './RenameChannel';
 import RemoveChannel from './RemoveChannel';
 
 const modals = {
-  add: AddChannel,
-  rename: RenameChannel,
-  remove: RemoveChannel,
+  add: <AddChannel />,
+  rename: <RenameChannel />,
+  remove: <RemoveChannel />,
 };
 
 const getModal = (action) => modals[action];

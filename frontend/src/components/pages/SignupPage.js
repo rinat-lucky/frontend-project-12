@@ -5,12 +5,13 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 
-import { addNewUser } from '../slices/usersSlice';
-import AuthContainer from '../components/AuthContainer';
-import ChatAPI from '../api/ChatAPI';
-import { useAuth } from '../hooks';
-import { useSchemaSignup } from '../hooks/useSchema';
-import img from '../assets/login.jpg';
+import { addNewUser } from '../../slices/usersSlice';
+import AuthContainer from '../AuthContainer';
+import AuthAPI from '../../api/AuthAPI';
+import { routesApp } from '../../routes';
+import { useAuth } from '../../hooks';
+import { useSchemaSignup } from '../../hooks/useSchema';
+import img from '../../assets/login.jpg';
 
 const SignupPage = () => {
   const auth = useAuth();
@@ -18,11 +19,11 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const api = useMemo(() => new ChatAPI(), []);
+  const api = useMemo(() => new AuthAPI(), []);
   const [ authFailed, setAuthFailedText ] = useState('');
 
   useEffect(() => {
-    if (auth.user) navigate('/');
+    if (auth.user) navigate(routesApp.homePage);
   }, [auth.user]);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const SignupPage = () => {
     },
     validationSchema: useSchemaSignup(),
     onSubmit: async (values) => {
+      setAuthFailedText('');
       try {
         const userData = await api.signUp(values);
         auth.logIn(userData);

@@ -1,17 +1,21 @@
-import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
-import { Provider as StoreProvider } from 'react-redux';
-import App from './components/App';
+import i18next from 'i18next';
 import resources from './locales';
+
+import { Provider as StoreProvider } from 'react-redux';
+import store from './slices';
+
+import SocketProvider from './contexts/SocketProvider';
 import io from 'socket.io-client';
+
+import AuthProvider from './contexts/AuthProvider';
+import App from './components/App';
 import { addChannel, renameChannel, removeChannel } from './slices/channelsSlice';
 import { setDeliveryState } from './slices/messagesSlice';
 import { addMessage } from './slices/messagesSlice';
-import store from './slices';
+
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AuthProvider from './contexts/AuthProvider';
-import SocketProvider from './contexts/SocketProvider';
 
 const init = async () => {
   const socket = io();

@@ -22,9 +22,9 @@ const MessageForm = () => {
 
   useEffect(() => {
     if (!deliveryState) return;
-    let timer = setTimeout(() => setDeliveryState(''), 2000);
+    const timer = setTimeout(() => dispatch(setDeliveryState('')), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [deliveryState]);
 
   const messageStatusText = {
     sending: t('messagesStatus.sending'),

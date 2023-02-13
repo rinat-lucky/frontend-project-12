@@ -1,9 +1,13 @@
 const apiBase = '/api/v1';
 
-const routes = {
+export const routesAPI = {
+  dataPath: () => [apiBase, 'data'].join('/'),
   loginPath: () => [apiBase, 'login'].join('/'),
   signupPath: () => [apiBase, 'signup'].join('/'),
-  dataPath: () => [apiBase, 'data'].join('/'),
 };
 
-export default routes;
+export const routesApp = {
+  homePage: '/',
+  loginPage: '/login',
+  signupPage: '/signup',
+};

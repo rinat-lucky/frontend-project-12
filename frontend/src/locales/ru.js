@@ -23,22 +23,22 @@ const ru = {
       remove: 'Удалить',
       rename: 'Переименовать',
     },
+    channelSettings: 'Управление каналом',
     notFoundPage: {
       title: 'Страница не найдена',
       navigateText: 'Но вы можете перейти ',
       toHomePage: 'на главную страницу',
     },
-    addModal: {
-      title: 'Добавить канал',
+    modal: {
       label: 'Имя канала',
       cancelButton: 'Отменить',
       submitButton: 'Отправить',
     },
+    addModal: {
+      title: 'Добавить канал',
+    },
     renameModal: {
       title: 'Переименовать канал',
-      label: 'Имя канала',
-      cancelButton: 'Отменить',
-      submitButton: 'Отправить',
     },
     removeModal: {
       title: 'Удалить канал',
