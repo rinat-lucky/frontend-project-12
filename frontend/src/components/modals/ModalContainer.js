@@ -1,15 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Modal, Button } from "react-bootstrap";
-import { setActiveModal } from "../slices/channelsSlice";
-import AddChannelModal from './AddChannelModal';
-import RenameChannelModal from './RenameChannelModal';
-import RemoveChannelModal from './RemoveChannelModal';
+import { setActiveModal } from "../../slices/channelsSlice";
+import getModal from '../modals';
 
-const modalForm = {
-  add: <AddChannelModal />,
-  rename: <RenameChannelModal />,
-  remove: <RemoveChannelModal />,
+const renderModal = (action) => {
+  const Component = getModal(action);
+  return <Component />;
 };
 
 const ModalContainer = () => {
@@ -36,7 +33,7 @@ const ModalContainer = () => {
         />
       </Modal.Header>
       <Modal.Body>
-        {modalForm[activeModal.type]}
+        {renderModal(activeModal.type)}
       </Modal.Body>
     </Modal>
   );

@@ -3,10 +3,12 @@ import channels from './channelsSlice';
 import messages from './messagesSlice';
 import users from './usersSlice';
 
-export default configureStore({
+const store = configureStore({
   reducer: {
     channels,
     messages,
     users,
   },
 });
+
+export default store;

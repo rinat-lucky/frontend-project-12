@@ -7,7 +7,7 @@ import { useFormik } from 'formik';
 import { useSchemaLogin } from '../hooks/useSchema';
 import AuthContainer from '../components/AuthContainer';
 import ChatAPI from '../api/ChatAPI';
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../hooks';
 import img from '../assets/login.jpg';
 
 const LoginPage = () => {
@@ -17,11 +17,10 @@ const LoginPage = () => {
   const { t } = useTranslation();
   const api = useMemo(() => new ChatAPI(), []);
   const [ authFailedText, setAuthFailedText ] = useState('');
-  const userInfo = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    if (userInfo) navigate('/');
-  }, [userInfo, navigate]);
+    if (auth.user) navigate('/');
+  }, [auth.user]);
 
   useEffect(() => {
     inputEl.current.focus();
@@ -35,8 +34,8 @@ const LoginPage = () => {
     validationSchema: useSchemaLogin(),
     onSubmit: async (values) => {
       try {
-        const jwt = await api.logIn(values);
-        await auth.setAuth(jwt, values);
+        const userData = await api.logIn(values);
+        auth.logIn(userData);
       } catch (_) {
         setAuthFailedText(t('error.wrongData'));
       }

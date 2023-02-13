@@ -3,39 +3,34 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Button, Form } from "react-bootstrap";
 import { useFormik } from 'formik';
-import io from 'socket.io-client';
-import { setActiveModal, addChannel } from "../slices/channelsSlice";
-import { useSchemaNaming } from '../hooks/useSchema';
+import { setActiveModal } from "../../slices/channelsSlice";
+import { useSchemaNaming } from '../../hooks/useSchema';
+import { useChat } from '../../hooks';
 
-const socket = io();
-
-const AddChannelModal = () => {
+const RenameChannelModal = () => {
+  const activeModal = useSelector((state) => state.channels.activeModal);
   const channels = useSelector((state) => state.channels.list);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const inputEl = useRef(null);
+  const targetChannel = channels.find((c) => c.id === activeModal.channelId);
+  const chat = useChat();
 
   useEffect(() => {
     inputEl.current.focus();
   }, []);
 
-  // некорректное поведение - создается несколько идентичных каналов
-  useEffect(() => {
-    socket.on('newChannel', (newChannel) => {
-      console.log('add channel');
-      dispatch(addChannel(newChannel)); 
-    });
-
-    // return () => socket.off();
-  }, []);
-
   const f = useFormik({
-    initialValues: { channelName: '' },
+    initialValues: { channelName: targetChannel.name },
     validationSchema: useSchemaNaming(channels),
     onSubmit: ({ channelName }, { resetForm }) => {
+      const channelData = {
+        name: channelName,
+        id: targetChannel.id,
+      };
       dispatch(setActiveModal(null));
+      chat.renameChannel(channelData);
       resetForm();
-      socket.emit('newChannel', { name: channelName });
     },
   });
 
@@ -43,29 +38,25 @@ const AddChannelModal = () => {
     <Form onSubmit={f.handleSubmit}>
       <Form.Group>
         <Form.Control
-          name="channelName"
-          id="channelName"
-          className="mb-2 w-100"
           ref={inputEl}
+          id="channelName"
+          name="channelName"
+          className="mb-2 w-100"
           onChange={f.handleChange}
           value={f.values.channelName}
           isInvalid={f.touched.channelName && f.errors.channelName}
         />
-        <Form.Label className="visually-hidden" htmlFor="channelName">{t('addModal.label')}</Form.Label>
+        <Form.Label className="visually-hidden" htmlFor="channelName">{t('renameModal.label')}</Form.Label>
         <Form.Control.Feedback type="invalid">{f.errors.channelName}</Form.Control.Feedback>
         <div className="d-flex justify-content-end">
-          <Button
-            className="me-2" 
-            variant="btn-secondary"
-            onClick={() => dispatch(setActiveModal(null))}
-          >
-            {t('addModal.cancelButton')}
+          <Button className="me-2" variant="btn-secondary" onClick={() => dispatch(setActiveModal(null))}>
+            {t('renameModal.cancelButton')}
           </Button>
-          <Button type="submit">{t('addModal.submitButton')}</Button>
+          <Button type="submit">{t('renameModal.submitButton')}</Button>
         </div>
       </Form.Group>
     </Form>
   );
 };
 
-export default AddChannelModal;
+export default RenameChannelModal;

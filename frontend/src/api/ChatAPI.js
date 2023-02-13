@@ -5,7 +5,7 @@ export default class ChatAPI {
   logIn = async (userData) => {
     try {
       const res = await axios.post(routes.loginPath(), userData);
-      return res.data.token;
+      return res.data;
     } catch (error) {
       throw new Error(`Ошибка при авторизации: ${error.message}`);
     }
@@ -14,7 +14,7 @@ export default class ChatAPI {
   signUp = async (userData) => {
     try {
       const res = await axios.post(routes.signupPath(), userData);
-      return res.data.token;
+      return res.data;
     } catch (error) {
       throw new Error(`Ошибка при регистрации: ${error.message}`);
     }

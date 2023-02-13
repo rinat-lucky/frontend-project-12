@@ -8,7 +8,7 @@ import { useFormik } from 'formik';
 import { addNewUser } from '../slices/usersSlice';
 import AuthContainer from '../components/AuthContainer';
 import ChatAPI from '../api/ChatAPI';
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../hooks';
 import { useSchemaSignup } from '../hooks/useSchema';
 import img from '../assets/login.jpg';
 
@@ -20,11 +20,10 @@ const SignupPage = () => {
   const { t } = useTranslation();
   const api = useMemo(() => new ChatAPI(), []);
   const [ authFailed, setAuthFailedText ] = useState('');
-  const userInfo = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    if (userInfo) navigate('/');
-  }, [userInfo, navigate]);
+    if (auth.user) navigate('/');
+  }, [auth.user]);
 
   useEffect(() => {
     inputEl.current.focus();
@@ -39,9 +38,8 @@ const SignupPage = () => {
     validationSchema: useSchemaSignup(),
     onSubmit: async (values) => {
       try {
-        const jwt = await api.signUp(values);
-        const { confirmPassword, ...userData } = values;
-        await auth.setAuth(jwt, userData);
+        const userData = await api.signUp(values);
+        auth.logIn(userData);
         dispatch(addNewUser(userData));
       } catch (_) {
         setAuthFailedText(t('error.userAlreadyExist'));

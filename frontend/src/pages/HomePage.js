@@ -5,25 +5,24 @@ import { useNavigate } from 'react-router-dom';
 import { setChannelsList, setCurrentChannel } from "../slices/channelsSlice";
 import { setMessages } from "../slices/messagesSlice";
 import ChatAPI from "../api/ChatAPI";
-import useAuth from "../hooks/useAuth";
+import { useAuth } from "../hooks";
 import Header from "../components/Header";
 import ChannelsPanel from "../components/ChannelsPanel";
 import MessagesPanel from "../components/MessagesPanel";
-import ModalContainer from "../components/ModalContainer";
-
-const userInfo = JSON.parse(localStorage.getItem('user'));
+import ModalContainer from "../components/modals/ModalContainer";
 
 const HomePage = () => {
+  const activeModal = useSelector((state) => state.channels.activeModal);
   const auth = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const api = useMemo(() => new ChatAPI(), []);
-  const activeModal = useSelector((state) => state.channels.activeModal);
 
   useEffect(() => {
-    if (!userInfo) return navigate('login');
+    const { user } = auth;
+    if (!user) return navigate('login');
     const fetchData = async () => {
-      const data = await api.getData(userInfo.token);
+      const data = await api.getData(user.token);
       dispatch(setChannelsList(data.channels));
       dispatch(setCurrentChannel(data.currentChannelId));
       dispatch(setMessages(data.messages));
@@ -31,8 +30,8 @@ const HomePage = () => {
     fetchData();
   }, []);
 
-  const handleLogOut = useCallback(async () => {
-    await auth.setLogout();
+  const handleLogOut = useCallback(() => {
+    auth.logOut();
     navigate('login');
   }, []); 
 

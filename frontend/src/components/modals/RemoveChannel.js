@@ -1,22 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Button } from "react-bootstrap";
-import { setActiveModal, setCurrentChannel, removeChannel } from "../slices/channelsSlice";
+import { setActiveModal, setCurrentChannel } from "../../slices/channelsSlice";
+import { useChat } from '../../hooks';
 
 const DEFAULT_CHANNEL_ID = 1;
 
-const RemoveChannelModal = () => {
+const RemoveChannel = () => {
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const activeModal = useSelector((state) => state.channels.activeModal);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const chat = useChat();
 
   const handleClick = () => {
     if (currentChannelId === activeModal.channelId) {
       dispatch(setCurrentChannel(DEFAULT_CHANNEL_ID));
     }
-    dispatch(removeChannel(activeModal.channelId));
     dispatch(setActiveModal(null));
+    chat.removeChannel(activeModal.channelId);
   };
 
   return (
@@ -34,4 +36,4 @@ const RemoveChannelModal = () => {
   );
 };
 
-export default RemoveChannelModal;
+export default RemoveChannel;

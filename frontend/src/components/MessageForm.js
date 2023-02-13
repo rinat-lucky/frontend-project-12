@@ -1,43 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
-import io from 'socket.io-client';
 import { Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-
 import { SendMessageButton } from './buttons';
-import { addMessage } from '../slices/messagesSlice';
-
-const socket = io();
+import { setDeliveryState } from '../slices/messagesSlice';
+import { useChat, useAuth } from '../hooks';
 
 const MessageForm = () => {
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
-  const userInfo = JSON.parse(localStorage.getItem('user'));
+  const deliveryState = useSelector((state) => state.messages.deliveryState);
   const dispatch = useDispatch();
-  const inputEl = useRef(null);
   const { t } = useTranslation();
-  const [ deliveredState, setDeliveredState] = useState('');
+  const inputEl = useRef(null);
+  const chat = useChat();
+  const auth = useAuth();
 
   useEffect(() => {
     inputEl.current.focus();
-  }, [currentChannelId, deliveredState]);
+  }, [currentChannelId, deliveryState]);
 
   useEffect(() => {
-    socket.on('newMessage', (newMessage) => {
-      dispatch(addMessage(newMessage));
-    });
-    socket.on("connect_error", () => {
-      setDeliveredState('networkError');
-    });
-    socket.on("connect", () => {
-      setDeliveredState('');
-    });
-
-    return () => {
-      socket.off('newMessage');
-      socket.off('connect_error');
-      socket.off('connect');
-    }; 
+    if (!deliveryState) return;
+    let timer = setTimeout(() => setDeliveryState(''), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   const messageStatusText = {
@@ -49,25 +35,20 @@ const MessageForm = () => {
   const f = useFormik({
     initialValues: { message: '' },
     onSubmit:  ({ message }, { resetForm }) => {
-      setDeliveredState('sending');
+      dispatch(setDeliveryState('sending'));
       const newMessage = {
         channelId: currentChannelId,
         body: message,
-        username: userInfo.username,
+        username: auth.user.username,
       };
-      socket.emit('newMessage', newMessage, (response) => {
-        if (response.status === 'ok') {
-          setDeliveredState('delivered');
-          setTimeout(() => setDeliveredState(''), 2000);
-          resetForm();
-        } 
-      });
+      chat.addMessage(newMessage);
+      resetForm();
     },
   });
 
   return (
     <>
-      <div className='small text-muted'>{!!deliveredState && messageStatusText[deliveredState]}</div>
+      {!!deliveryState && (<div className='small text-muted'>{messageStatusText[deliveryState]}</div>)}
       <Form noValidate onSubmit={f.handleSubmit} className="py-1 border rounded-2">
         <InputGroup hasValidation>
           <Form.Control

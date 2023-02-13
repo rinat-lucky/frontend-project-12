@@ -3,6 +3,7 @@ import { removeChannel } from './channelsSlice';
 
 const initialState = {
   list: [],
+  deliveryState: '',
 };
 
 const messagesSlice = createSlice({
@@ -15,6 +16,9 @@ const messagesSlice = createSlice({
     addMessage: (state, { payload }) => {
       state.list.push(payload);
     },
+    setDeliveryState: (state, { payload }) => {
+      state.deliveryState = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(removeChannel, (state, { payload }) => {
@@ -24,5 +28,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { setMessages, addMessage } = messagesSlice.actions;
+export const { setMessages, addMessage, setDeliveryState } = messagesSlice.actions;
 export default messagesSlice.reducer;
