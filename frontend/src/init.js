@@ -8,8 +8,9 @@ import store from './slices';
 import ApiProvider from './contexts/ApiProvider';
 import io from 'socket.io-client';
 
-import { ToastContainer } from "react-toastify";
+import RollbarProvider from './components/RollbarProvider';
 import AuthProvider from './contexts/AuthProvider';
+import { ToastContainer } from "react-toastify";
 
 import App from './components/App';
 import { addChannel, renameChannel, removeChannel } from './slices/channelsSlice';
@@ -50,14 +51,16 @@ const init = async () => {
 
   return (
     <AuthProvider>
-      <I18nextProvider i18n={i18n}>
-        <StoreProvider store={store}>
-          <ApiProvider socket={socket}>
-            <App />
-            <ToastContainer />
-          </ApiProvider>
-        </StoreProvider>
-      </I18nextProvider>
+      <RollbarProvider>
+        <I18nextProvider i18n={i18n}>
+          <StoreProvider store={store}>
+            <ApiProvider socket={socket}>
+              <App />
+              <ToastContainer />
+            </ApiProvider>
+          </StoreProvider>
+        </I18nextProvider>
+      </RollbarProvider>
     </AuthProvider>
   );
 };
