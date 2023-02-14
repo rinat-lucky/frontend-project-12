@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { AuthContext, SocketContext } from '../contexts';
+import { AuthContext, ApiContext } from '../contexts';
 
 export const useAuth = () => useContext(AuthContext);
-export const useChat = () => useContext(SocketContext);
+export const useChat = () => useContext(ApiContext);

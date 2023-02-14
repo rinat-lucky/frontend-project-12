@@ -1,27 +1,26 @@
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 
-import { useSchemaLogin } from '../../hooks/useSchema';
+import { useSchemaLogin as useSchema } from '../../hooks/useSchema';
 import AuthContainer from '../AuthContainer';
-import AuthAPI from '../../api/AuthAPI';
-import { useAuth } from '../../hooks';
+import { useAuth, useChat } from '../../hooks';
 import { routesApp } from "../../routes";
 import img from '../../assets/login.jpg';
 
 const LoginPage = () => {
-  const auth = useAuth();
+  const { user, logIn} = useAuth();
+  const { signIn } = useChat();
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const api = useMemo(() => new AuthAPI(), []);
   const [ authFailedText, setAuthFailedText ] = useState('');
 
   useEffect(() => {
-    if (auth.user) navigate(routesApp.homePage);
-  }, [auth.user]);
+    if (user) navigate(routesApp.homePage);
+  }, [user]);
 
   useEffect(() => {
     inputEl.current.focus();
@@ -32,11 +31,11 @@ const LoginPage = () => {
       username: '',
       password: '',
     },
-    validationSchema: useSchemaLogin(),
+    validationSchema: useSchema(),
     onSubmit: async (values) => {
       try {
-        const userData = await api.logIn(values);
-        auth.logIn(userData);
+        const userData = await signIn(values);
+        logIn(userData);
       } catch (_) {
         setAuthFailedText(t('error.wrongData'));
       }

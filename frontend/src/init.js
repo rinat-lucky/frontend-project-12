@@ -5,10 +5,12 @@ import resources from './locales';
 import { Provider as StoreProvider } from 'react-redux';
 import store from './slices';
 
-import SocketProvider from './contexts/SocketProvider';
+import ApiProvider from './contexts/ApiProvider';
 import io from 'socket.io-client';
 
+import { ToastContainer } from "react-toastify";
 import AuthProvider from './contexts/AuthProvider';
+
 import App from './components/App';
 import { addChannel, renameChannel, removeChannel } from './slices/channelsSlice';
 import { setDeliveryState } from './slices/messagesSlice';
@@ -16,6 +18,7 @@ import { addMessage } from './slices/messagesSlice';
 
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 const init = async () => {
   const socket = io();
@@ -49,9 +52,10 @@ const init = async () => {
     <AuthProvider>
       <I18nextProvider i18n={i18n}>
         <StoreProvider store={store}>
-          <SocketProvider socket={socket}>
+          <ApiProvider socket={socket}>
             <App />
-          </SocketProvider>
+            <ToastContainer />
+          </ApiProvider>
         </StoreProvider>
       </I18nextProvider>
     </AuthProvider>

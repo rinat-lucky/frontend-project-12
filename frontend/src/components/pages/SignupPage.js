@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
@@ -7,24 +7,23 @@ import { useFormik } from 'formik';
 
 import { addNewUser } from '../../slices/usersSlice';
 import AuthContainer from '../AuthContainer';
-import AuthAPI from '../../api/AuthAPI';
 import { routesApp } from '../../routes';
-import { useAuth } from '../../hooks';
+import { useAuth, useChat } from '../../hooks';
 import { useSchemaSignup } from '../../hooks/useSchema';
 import img from '../../assets/login.jpg';
 
 const SignupPage = () => {
-  const auth = useAuth();
+  const { user, logIn } = useAuth();
+  const { signUp } = useChat();
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const api = useMemo(() => new AuthAPI(), []);
   const [ authFailed, setAuthFailedText ] = useState('');
 
   useEffect(() => {
-    if (auth.user) navigate(routesApp.homePage);
-  }, [auth.user]);
+    if (user) navigate(routesApp.homePage);
+  }, [user]);
 
   useEffect(() => {
     inputEl.current.focus();
@@ -40,15 +39,15 @@ const SignupPage = () => {
     onSubmit: async (values) => {
       setAuthFailedText('');
       try {
-        const userData = await api.signUp(values);
-        auth.logIn(userData);
+        const userData = await signUp(values);
+        logIn(userData);
         dispatch(addNewUser(userData));
       } catch (_) {
         setAuthFailedText(t('error.userAlreadyExist'));
       }
     },
   });
-  
+
   return (
     <AuthContainer>
       <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">

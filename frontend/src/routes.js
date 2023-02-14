@@ -2,7 +2,7 @@ const apiBase = '/api/v1';
 
 export const routesAPI = {
   dataPath: () => [apiBase, 'data'].join('/'),
-  loginPath: () => [apiBase, 'login'].join('/'),
+  signinPath: () => [apiBase, 'login'].join('/'),
   signupPath: () => [apiBase, 'signup'].join('/'),
 };
 

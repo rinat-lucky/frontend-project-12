@@ -17,13 +17,12 @@ const RemoveChannel = () => {
     if (currentChannelId === activeModal.channelId) {
       dispatch(setCurrentChannel(DEFAULT_CHANNEL_ID));
     }
-    dispatch(setActiveModal(null));
-    chat.removeChannel(activeModal.channelId);
+    chat.setChannels('removeChannel', {id: activeModal.channelId});
   };
 
   return (
     <>
-      <p className="lead">{t('removeModal.clarify')}</p>
+      <p className="lead">{t('removeModal.confirm')}</p>
       <div className="d-flex justify-content-end">
         <Button variant="btn-secondary" onClick={() => dispatch(setActiveModal(null))} className="me-2">
           {t('removeModal.cancelButton')}

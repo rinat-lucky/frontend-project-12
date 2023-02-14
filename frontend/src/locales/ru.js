@@ -42,7 +42,7 @@ const ru = {
     },
     removeModal: {
       title: 'Удалить канал',
-      clarify: 'Уверены?',
+      confirm: 'Уверены?',
       cancelButton: 'Отменить',
       submitButton: 'Удалить',
     },
@@ -74,6 +74,15 @@ const ru = {
       mustMatch: 'Пароли должны совпадать',
       network: 'ошибка соединения',
     },
+    notice: {
+      newChannel: 'Канал успешно создан',
+      renameChannel: 'Канал успешно переименован',
+      removeChannel: 'Канал успешно удален',
+      networkError: 'Ошибка соединения',
+      signin: 'Ошибка при авторизации',
+      signup: 'Ошибка при регистрации',
+      getData: 'Ошибка при загрузке данных',
+    }
   },
 };
 
