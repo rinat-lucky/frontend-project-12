@@ -17,11 +17,11 @@ export const useSchemaSignup = () => {
 
   return yup.object().shape({
     username: yup.string()
-      .min(3, t('error.tooShort_3'))
-      .max(20, t('error.tooLong'))
+      .min(3, t('error.wrongLength'))
+      .max(20, t('error.wrongLength'))
       .required(t('error.required')),
     password: yup.string()
-      .min(6, t('error.tooShort_6'))
+      .min(6, t('error.tooShort'))
       .required(t('error.required')),
     confirmPassword: yup.string()
       .required(t('error.required'))
@@ -34,11 +34,10 @@ export const useSchemaLogin = () => {
 
   return yup.object().shape({
     username: yup.string()
-      .min(3, t('error.tooShort_3'))
-      .max(20, t('error.tooLong'))
+      .min(3, t('error.wrongLength'))
+      .max(20, t('error.wrongLength'))
       .required(t('error.required')),
     password: yup.string()
-      .min(5, t('error.tooShort_5'))
       .required(t('error.required')),
   });
 };

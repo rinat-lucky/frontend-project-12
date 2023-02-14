@@ -15,6 +15,3 @@ start:
 
 build:
 	make -C frontend build
-
-ports:
-	sudo lsof -i

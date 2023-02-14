@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 
 import { useSchemaLogin as useSchema } from '../../hooks/useSchema';
 import AuthContainer from '../AuthContainer';
@@ -26,20 +27,31 @@ const LoginPage = () => {
     inputEl.current.focus();
   }, []);
 
+  const handleSubmit = async (formData) => {
+    try {
+      const userData = await signIn(formData);
+      logIn(userData);
+    } catch (err) {
+      switch (err.code) {
+        case 'ERR_NETWORK':
+          toast.error(t('notice.networkError'));
+          throw new Error(`${t('notice.networkError')}: ${err}`);
+        case 'ERR_BAD_REQUEST':
+          setAuthFailedText(t('error.wrongData'));
+          throw new Error(`${t('error.wrongData')}: ${err}`);
+        default:
+          throw new Error(`${t('notice.signin')}: ${err}`);
+      }
+    }
+  };
+
   const f = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     validationSchema: useSchema(),
-    onSubmit: async (values) => {
-      try {
-        const userData = await signIn(values);
-        logIn(userData);
-      } catch (_) {
-        setAuthFailedText(t('error.wrongData'));
-      }
-    },
+    onSubmit: (values) => handleSubmit(values),
   });
 
   return (

@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 
 import { addNewUser } from '../../slices/usersSlice';
 import AuthContainer from '../AuthContainer';
 import { routesApp } from '../../routes';
 import { useAuth, useChat } from '../../hooks';
-import { useSchemaSignup } from '../../hooks/useSchema';
+import { useSchemaSignup as useSchema } from '../../hooks/useSchema';
 import img from '../../assets/login.jpg';
 
 const SignupPage = () => {
@@ -28,6 +29,25 @@ const SignupPage = () => {
   useEffect(() => {
     inputEl.current.focus();
   }, []);
+
+  const handleSubmit = async (formData) => {
+    try {
+      const userData = await signUp(formData);
+      logIn(userData);
+      dispatch(addNewUser(userData));
+    } catch (err) {
+      switch (err.code) {
+        case 'ERR_NETWORK':
+          toast.error(t('notice.networkError'));
+          throw new Error(`${t('notice.networkError')}: ${err}`);
+        case 'ERR_BAD_REQUEST':
+          setAuthFailedText(t('error.userAlreadyExist'));
+          throw new Error(`${t('error.userAlreadyExist')}: ${err}`);
+        default:
+          throw new Error(`${t('notice.signup')}: ${err}`);
+      }
+    }
+  };
   
   const f = useFormik({
     initialValues: {
@@ -35,17 +55,8 @@ const SignupPage = () => {
       password: '',
       confirmPassword: '',
     },
-    validationSchema: useSchemaSignup(),
-    onSubmit: async (values) => {
-      setAuthFailedText('');
-      try {
-        const userData = await signUp(values);
-        logIn(userData);
-        dispatch(addNewUser(userData));
-      } catch (_) {
-        setAuthFailedText(t('error.userAlreadyExist'));
-      }
-    },
+    validationSchema: useSchema(),
+    onSubmit: (values) => handleSubmit(values),
   });
 
   return (

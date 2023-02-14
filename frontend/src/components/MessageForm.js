@@ -65,6 +65,7 @@ const MessageForm = () => {
             type="text"
             value={f.values.message}
           />
+          <Form.Label className="visually-hidden" htmlFor="message">{t('messageLabel')}</Form.Label>
           <SendMessageButton message={f.values.message} />
         </InputGroup>
       </Form>

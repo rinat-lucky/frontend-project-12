@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { setChannelsList, setCurrentChannel } from "../../slices/channelsSlice";
 import { setMessages } from "../../slices/messagesSlice";
@@ -17,14 +19,25 @@ const HomePage = () => {
   const { getData } = useChat();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) return navigate(routesApp.loginPage);
     const fetchData = async () => {
-      const data = await getData(user.token);
-      dispatch(setChannelsList(data.channels));
-      dispatch(setCurrentChannel(data.currentChannelId));
-      dispatch(setMessages(data.messages));
+      try {
+        const data = await getData(user.token);
+        dispatch(setChannelsList(data.channels));
+        dispatch(setCurrentChannel(data.currentChannelId));
+        dispatch(setMessages(data.messages));
+      } catch (err) {
+        if (err.message === 'Network Error') {
+          toast.error(t(`notice.networkError`));
+          throw new Error(`${t('notice.networkErrora')}: ${err}`);
+        } else {
+          toast.error(t(`notice.getData`));
+          throw new Error(`${t('notice.getData')}: ${err}`);
+        }
+      }
     };
     fetchData();
   }, []);
