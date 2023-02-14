@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+import filter from 'leo-profanity';
 import { SendMessageButton } from './buttons';
 import { setDeliveryState } from '../slices/messagesSlice';
 import { useChat, useAuth } from '../hooks';
@@ -36,9 +37,11 @@ const MessageForm = () => {
     initialValues: { message: '' },
     onSubmit:  ({ message }, { resetForm }) => {
       dispatch(setDeliveryState('sending'));
+      filter.loadDictionary('ru');
+      const filteredText = filter.clean(message);
       const newMessage = {
         channelId: currentChannelId,
-        body: message,
+        body: filteredText,
         username: auth.user.username,
       };
       chat.addMessage(newMessage);

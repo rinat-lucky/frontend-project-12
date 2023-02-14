@@ -75,9 +75,9 @@ const ru = {
       network: 'ошибка соединения',
     },
     notice: {
-      newChannel: 'Канал успешно создан',
-      renameChannel: 'Канал успешно переименован',
-      removeChannel: 'Канал успешно удален',
+      newChannel: 'Канал создан',
+      renameChannel: 'Канал переименован',
+      removeChannel: 'Канал удалён',
       networkError: 'Ошибка соединения',
       signin: 'Ошибка при авторизации',
       signup: 'Ошибка при регистрации',
