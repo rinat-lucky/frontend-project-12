@@ -51,16 +51,16 @@ const init = async () => {
 
   return (
     <AuthProvider>
-      <RollbarProvider>
-        <I18nextProvider i18n={i18n}>
-          <StoreProvider store={store}>
-            <ApiProvider socket={socket}>
+      <I18nextProvider i18n={i18n}>
+        <StoreProvider store={store}>
+          <ApiProvider socket={socket}>
+            <RollbarProvider>
               <App />
               <ToastContainer />
-            </ApiProvider>
-          </StoreProvider>
-        </I18nextProvider>
-      </RollbarProvider>
+            </RollbarProvider>
+          </ApiProvider>
+        </StoreProvider>
+      </I18nextProvider>
     </AuthProvider>
   );
 };
