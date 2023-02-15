@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { useRollbar } from '@rollbar/react';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
@@ -17,6 +18,7 @@ const LoginPage = () => {
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const rollbar = useRollbar();
   const [ authFailedText, setAuthFailedText ] = useState('');
 
   useEffect(() => {
@@ -35,11 +37,14 @@ const LoginPage = () => {
       switch (err.code) {
         case 'ERR_NETWORK':
           toast.error(t('notice.networkError'));
+          rollbar.error(t('notice.networkError'), err);
           throw new Error(`${t('notice.networkError')}: ${err}`);
         case 'ERR_BAD_REQUEST':
           setAuthFailedText(t('error.wrongData'));
+          rollbar.error(t('error.wrongData'), err, formData);
           throw new Error(`${t('error.wrongData')}: ${err}`);
         default:
+          rollbar.error(t('notice.signin'), err, formData);
           throw new Error(`${t('notice.signin')}: ${err}`);
       }
     }

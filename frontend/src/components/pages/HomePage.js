@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import { useRollbar } from '@rollbar/react';
 
 import { setChannelsList, setCurrentChannel } from "../../slices/channelsSlice";
 import { setMessages } from "../../slices/messagesSlice";
@@ -20,6 +21,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const rollbar = useRollbar();
 
   useEffect(() => {
     if (!user) return navigate(routesApp.loginPage);
@@ -32,9 +34,11 @@ const HomePage = () => {
       } catch (err) {
         if (err.message === 'Network Error') {
           toast.error(t(`notice.networkError`));
+          rollbar.error(t('notice.networkError'), err);
           throw new Error(`${t('notice.networkErrora')}: ${err}`);
         } else {
           toast.error(t(`notice.getData`));
+          rollbar.error(t('notice.getData'), err, user);
           throw new Error(`${t('notice.getData')}: ${err}`);
         }
       }

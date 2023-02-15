@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { useRollbar } from '@rollbar/react';
 import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
@@ -20,6 +21,7 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const rollbar = useRollbar();
   const [ authFailed, setAuthFailedText ] = useState('');
 
   useEffect(() => {
@@ -39,11 +41,14 @@ const SignupPage = () => {
       switch (err.code) {
         case 'ERR_NETWORK':
           toast.error(t('notice.networkError'));
+          rollbar.error(t('notice.networkError'), err);
           throw new Error(`${t('notice.networkError')}: ${err}`);
         case 'ERR_BAD_REQUEST':
           setAuthFailedText(t('error.userAlreadyExist'));
+          rollbar.error(t('error.userAlreadyExist'), err, formData);
           throw new Error(`${t('error.userAlreadyExist')}: ${err}`);
         default:
+          rollbar.error(t('notice.signup'), err, formData);
           throw new Error(`${t('notice.signup')}: ${err}`);
       }
     }
