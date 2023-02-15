@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { routesAPI } from '../routes';
 
-const ChatAPI = () => { 
+const ChatAPI = () => {
   const signIn = async (userData) => {
     const res = await axios.post(routesAPI.signinPath(), userData);
     return res.data;
@@ -15,7 +15,7 @@ const ChatAPI = () => {
   const getData = async (jwt) => {
     const res = await axios.get(
       routesAPI.dataPath(),
-      {headers: {"Authorization": `Bearer ${jwt}`}}
+      { headers: { Authorization: `Bearer ${jwt}` } },
     );
     return res.data;
   };

@@ -5,7 +5,7 @@ import { useChat } from '../../hooks';
 import ModalForm from './ModalForm';
 
 const RenameChannel = () => {
-  const chat = useChat();
+  const { setChannels } = useChat();
   const activeModal = useSelector((state) => state.channels.activeModal);
   const channels = useSelector((state) => state.channels.list);
   const targetChannel = channels.find((c) => c.id === activeModal.channelId);
@@ -14,11 +14,11 @@ const RenameChannel = () => {
     initialValues: { name: targetChannel.name },
     validationSchema: useSchemaNaming(channels),
     onSubmit: ({ name }) => {
-      chat.setChannels('renameChannel', {name, id: targetChannel.id});
+      setChannels('renameChannel', { name, id: targetChannel.id });
     },
   });
 
-  return (<ModalForm form={formik}></ModalForm>);
+  return (<ModalForm form={formik} />);
 };
 
 export default RenameChannel;

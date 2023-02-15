@@ -3,12 +3,12 @@ import { AuthContext } from './index.js';
 
 const AuthProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
-  const initialState = currentUser ? currentUser : null;
+  const initialState = currentUser || null;
   const [user, setUser] = useState(initialState);
 
-  const logIn = (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
+  const logIn = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const logOut = () => {

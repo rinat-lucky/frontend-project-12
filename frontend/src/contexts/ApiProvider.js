@@ -1,7 +1,7 @@
-import { ApiContext } from './index.js';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import { ApiContext } from './';
 import { setDeliveryState } from '../slices/messagesSlice.js';
 import { setActiveModal } from '../slices/channelsSlice.js';
 import chatAPI from '../api/ChatApi.js';

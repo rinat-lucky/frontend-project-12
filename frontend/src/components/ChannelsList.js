@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
-import { setActiveModal, setCurrentChannel } from "../slices/channelsSlice";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import { setActiveModal, setCurrentChannel } from '../slices/channelsSlice';
 
 const channelOptions = ['rename', 'remove'];
 
@@ -16,12 +16,15 @@ const ChannelsList = () => {
 
     const optionButtons = (
       <>
-        <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className='border-0 w-auto'>
+        <Dropdown.Toggle split id="dropdown-split-basic" variant={variant} className="border-0 w-auto">
           <span className="visually-hidden">{t('channelSettings')}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {channelOptions.map((opt, i) => (
-            <Dropdown.Item onClick={() => dispatch(setActiveModal({type: opt, channelId: channel.id}))} key={i}>
+          {channelOptions.map((opt) => (
+            <Dropdown.Item
+              onClick={() => dispatch(setActiveModal({ type: opt, channelId: channel.id }))}
+              key={opt}
+            >
               {t(`channelsButton.${opt}`)}
             </Dropdown.Item>
           ))}
@@ -31,13 +34,13 @@ const ChannelsList = () => {
 
     return (
       <li key={channel.id} className="nav-item w-100">
-        <Dropdown as={ButtonGroup} className='d-flex'>
+        <Dropdown as={ButtonGroup} className="d-flex">
           <Button
-            className='w-100 rounded-0 text-start text-truncate border-0'
+            className="w-100 rounded-0 text-start text-truncate border-0"
             onClick={() => dispatch(setCurrentChannel(channel.id))}
             variant={variant}
           >
-            # {channel.name}
+            {`# ${channel.name}`}
           </Button>
           {channel.removable && optionButtons}
         </Dropdown>

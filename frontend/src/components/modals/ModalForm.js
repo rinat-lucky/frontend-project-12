@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useTranslation } from "react-i18next";
-import { Button, Form } from "react-bootstrap";
-import { setActiveModal } from "../../slices/channelsSlice";
+import { useTranslation } from 'react-i18next';
+import { Button, Form } from 'react-bootstrap';
+import { setActiveModal } from '../../slices/channelsSlice';
 
 const ModalForm = ({ form }) => {
   const inputEl = useRef(null);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  
+
   useEffect(() => {
     inputEl.current.focus();
   }, []);

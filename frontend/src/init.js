@@ -1,21 +1,17 @@
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
-import resources from './locales';
-
 import { Provider as StoreProvider } from 'react-redux';
-import store from './slices';
-
-import ApiProvider from './contexts/ApiProvider';
+import { ToastContainer } from 'react-toastify';
 import io from 'socket.io-client';
 
-import RollbarProvider from './components/RollbarProvider';
+import ApiProvider from './contexts/ApiProvider';
 import AuthProvider from './contexts/AuthProvider';
-import { ToastContainer } from "react-toastify";
-
+import RollbarProvider from './components/RollbarProvider';
 import App from './components/App';
+import store from './slices';
 import { addChannel, renameChannel, removeChannel } from './slices/channelsSlice';
-import { setDeliveryState } from './slices/messagesSlice';
-import { addMessage } from './slices/messagesSlice';
+import { setDeliveryState, addMessage } from './slices/messagesSlice';
+import resources from './locales';
 
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 
 const init = async () => {
   const socket = io();
-  
+
   socket.on('newMessage', (message) => {
     store.dispatch(addMessage(message));
   });
@@ -36,7 +32,7 @@ const init = async () => {
   socket.on('renameChannel', ({ id, name }) => {
     store.dispatch(renameChannel({ id, name }));
   });
-  socket.on("connect_error", () => {
+  socket.on('connect_error', () => {
     store.dispatch(setDeliveryState('networkError'));
   });
 

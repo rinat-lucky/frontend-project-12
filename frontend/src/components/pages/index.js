@@ -1,24 +1,24 @@
-import { createBrowserRouter } from "react-router-dom";
-
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import SignupPage from "../pages/SignupPage";
-import NotFoundPage from "../pages/NotFoundPage";
+import { createBrowserRouter } from 'react-router-dom';
+import HomePage from './HomePage';
+import LoginPage from './LoginPage';
+import SignupPage from './SignupPage';
+import NotFoundPage from './NotFoundPage';
+import { routesApp } from '../../routes';
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <HomePage />,
+  {
+    path: routesApp.homePage,
+    element: <HomePage />,
     errorElement: <NotFoundPage />,
-	},
-	{
-		path: "login",
-		element: <LoginPage />,
-	},
-	{
-		path: "signup",
-		element: <SignupPage />,
-	},
+  },
+  {
+    path: routesApp.loginPage,
+    element: <LoginPage />,
+  },
+  {
+    path: routesApp.signupPage,
+    element: <SignupPage />,
+  },
 ]);
 
 export default router;

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Form, InputGroup } from 'react-bootstrap';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import filter from 'leo-profanity';
 import { SendMessageButton } from './buttons';
 import { setDeliveryState } from '../slices/messagesSlice';
@@ -24,8 +24,10 @@ const MessageForm = () => {
   useEffect(() => {
     if (!deliveryState) return;
     const timer = setTimeout(() => dispatch(setDeliveryState('')), 2000);
-    return () => clearTimeout(timer);
-  }, [deliveryState]);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [deliveryState, dispatch]);
 
   const messageStatusText = {
     sending: t('messagesStatus.sending'),
@@ -35,7 +37,7 @@ const MessageForm = () => {
 
   const f = useFormik({
     initialValues: { message: '' },
-    onSubmit:  ({ message }, { resetForm }) => {
+    onSubmit: ({ message }, { resetForm }) => {
       dispatch(setDeliveryState('sending'));
       filter.loadDictionary('ru');
       const filteredText = filter.clean(message);
@@ -51,7 +53,7 @@ const MessageForm = () => {
 
   return (
     <>
-      {!!deliveryState && (<div className='small text-muted'>{messageStatusText[deliveryState]}</div>)}
+      {!!deliveryState && (<div className="small text-muted">{messageStatusText[deliveryState]}</div>)}
       <Form noValidate onSubmit={f.handleSubmit} className="py-1 border rounded-2">
         <InputGroup hasValidation>
           <Form.Control

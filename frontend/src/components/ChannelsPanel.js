@@ -1,7 +1,7 @@
-import { useSelector } from "react-redux";
-import { AddChannelButton } from "./buttons";
-import ChannelsList from "./ChannelsList";
-import { useTranslation } from "react-i18next";
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { AddChannelButton } from './buttons';
+import ChannelsList from './ChannelsList';
 
 const ChannelsPanel = () => {
   const channels = useSelector((state) => state.channels.list);

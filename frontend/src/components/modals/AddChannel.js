@@ -6,15 +6,15 @@ import ModalForm from './ModalForm';
 
 const AddChannel = () => {
   const channels = useSelector((state) => state.channels.list);
-  const chat = useChat();
+  const { setChannels } = useChat();
 
   const formik = useFormik({
     initialValues: { name: '' },
     validationSchema: useSchemaNaming(channels),
-    onSubmit: ({ name }) => chat.setChannels('newChannel', {name}),
+    onSubmit: ({ name }) => setChannels('newChannel', { name }),
   });
 
-  return (<ModalForm form={formik}></ModalForm>);
+  return (<ModalForm form={formik} />);
 };
 
 export default AddChannel;
