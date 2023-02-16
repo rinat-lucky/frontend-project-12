@@ -24,9 +24,8 @@ const MessageForm = () => {
   useEffect(() => {
     if (!deliveryState) return;
     const timer = setTimeout(() => dispatch(setDeliveryState('')), 2000);
-    return () => {
-      clearTimeout(timer);
-    };
+    // eslint-disable-next-line consistent-return
+    return () => clearTimeout(timer);
   }, [deliveryState, dispatch]);
 
   const messageStatusText = {

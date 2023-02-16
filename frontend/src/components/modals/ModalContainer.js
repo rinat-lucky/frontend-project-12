@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Modal, Button } from 'react-bootstrap';
 import { setActiveModal } from '../../slices/channelsSlice';
-import getModal from './';
+import getModal from '.';
 
 const ModalContainer = () => {
   const activeModal = useSelector((state) => state.channels.activeModal);

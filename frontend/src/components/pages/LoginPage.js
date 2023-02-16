@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
-import { Button, Form, Image, FloatingLabel } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import {
+  Button,
+  Form,
+  Image,
+  FloatingLabel,
+} from 'react-bootstrap';
 
 import { useSchemaLogin as useSchema } from '../../hooks/useSchema';
 import AuthContainer from '../AuthContainer';

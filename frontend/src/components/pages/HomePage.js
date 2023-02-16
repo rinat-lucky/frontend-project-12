@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
 
@@ -45,8 +45,8 @@ const HomePage = () => {
       }
     };
     fetchData();
-  }, [ dispatch, getData, navigate, rollbar, t, user]);
-   /* eslint-enable consistent-return */
+  }, [dispatch, getData, navigate, rollbar, t, user]);
+  /* eslint-enable consistent-return */
 
   const handleLogOut = useCallback(() => {
     logOut();
