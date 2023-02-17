@@ -15,9 +15,11 @@ const ApiProvider = ({ socket, children }) => {
     signIn,
     signUp,
     getData,
-    addMessage: (message) => socket.emit('newMessage', message, (response) => {
+    addMessage: (message, resetForm) => socket.emit('newMessage', message, (response) => {
       if (response.status === 'ok') {
         dispatch(setDeliveryState('delivered'));
+        resetForm();
+        setTimeout(() => dispatch(setDeliveryState('')), 2000);
       }
     }),
     setChannels: (event, data) => socket.emit(event, data, (response) => {

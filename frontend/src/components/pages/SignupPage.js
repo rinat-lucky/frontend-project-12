@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
@@ -12,7 +11,6 @@ import {
   FloatingLabel,
 } from 'react-bootstrap';
 
-import { addNewUser } from '../../slices/usersSlice';
 import AuthContainer from '../AuthContainer';
 import { routesApp } from '../../routes';
 import { useAuth, useChat } from '../../hooks';
@@ -24,10 +22,10 @@ const SignupPage = () => {
   const { signUp } = useChat();
   const inputEl = useRef(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const rollbar = useRollbar();
   const [authFailed, setAuthFailedText] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) navigate(routesApp.homePage);
@@ -38,10 +36,10 @@ const SignupPage = () => {
   }, []);
 
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       const userData = await signUp(formData);
       logIn(userData);
-      dispatch(addNewUser(userData));
     } catch (err) {
       switch (err.code) {
         case 'ERR_NETWORK':
@@ -56,6 +54,8 @@ const SignupPage = () => {
           rollbar.error(t('notice.signup'), err, formData);
           throw new Error(`${t('notice.signup')}: ${err}`);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,6 +86,7 @@ const SignupPage = () => {
               name="username"
               placeholder={t('signupPage.nameLabel')}
               isInvalid={authFailed || (f.touched.username && f.errors.username)}
+              disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid" tooltip>{f.errors.username}</Form.Control.Feedback>
           </FloatingLabel>
@@ -98,6 +99,7 @@ const SignupPage = () => {
               type="password"
               placeholder={t('signupPage.passwordLabel')}
               isInvalid={authFailed || (f.touched.password && f.errors.password)}
+              disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid" tooltip>{f.errors.password}</Form.Control.Feedback>
           </FloatingLabel>
@@ -109,10 +111,18 @@ const SignupPage = () => {
               value={f.values.confirmPassword}
               placeholder={t('signupPage.confirmPasswordLabel')}
               isInvalid={authFailed || (f.touched.confirmPassword && f.errors.confirmPassword)}
+              disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid" tooltip>{authFailed || f.errors.confirmPassword}</Form.Control.Feedback>
           </FloatingLabel>
-          <Button type="submit" className="w-100" variant="outline-primary">{t('signupPage.submitButton')}</Button>
+          <Button
+            type="submit"
+            className="w-100"
+            variant="outline-primary"
+            disabled={isLoading || !f.values.password || !f.values.username || !f.values.confirmPassword}
+          >
+            {t('signupPage.submitButton')}
+          </Button>
         </Form>
       </div>
     </AuthContainer>

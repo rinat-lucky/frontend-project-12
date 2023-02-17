@@ -1,18 +1,27 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { PlusSquare } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
-import { AddChannelButton } from './buttons';
+import { Button } from 'react-bootstrap';
+import { setActiveModal } from '../slices/channelsSlice';
 import ChannelsList from './ChannelsList';
 
 const ChannelsPanel = () => {
-  const channels = useSelector((state) => state.channels.list);
+  const channels = useSelector((state) => state.channels.channelsList);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   return (
     <div className="col-4 col-md-2 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
         <span>{t('channelsTitle')}</span>
-        <AddChannelButton />
+        <Button 
+          className="p-0 text-primary btn-group-vertical border-0 form-control w-auto"
+          onClick={() => dispatch(setActiveModal({ type: 'add' }))}
+          variant={null}
+        >
+          <PlusSquare size={20} />
+        </Button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill px-2">
         {channels && currentChannelId && (<ChannelsList />)}

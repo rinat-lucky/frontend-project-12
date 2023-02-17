@@ -6,7 +6,7 @@ import { setActiveModal, setCurrentChannel } from '../slices/channelsSlice';
 const channelOptions = ['rename', 'remove'];
 
 const ChannelsList = () => {
-  const channels = useSelector((state) => state.channels.list);
+  const channels = useSelector((state) => state.channels.channelsList);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const dispatch = useDispatch();
   const { t } = useTranslation();

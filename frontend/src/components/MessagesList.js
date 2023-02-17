@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 const MessagesList = ({ messages }) => {
-  const channels = useSelector((state) => state.channels.list);
+  const channels = useSelector((state) => state.channels.channelsList);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const { t } = useTranslation();
 

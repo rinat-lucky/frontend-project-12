@@ -25,6 +25,7 @@ const LoginPage = () => {
   const { t } = useTranslation();
   const rollbar = useRollbar();
   const [authFailedText, setAuthFailedText] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) navigate(routesApp.homePage);
@@ -35,6 +36,7 @@ const LoginPage = () => {
   }, []);
 
   const handleSubmit = async (formData) => {
+    setLoading(true);
     try {
       const userData = await signIn(formData);
       logIn(userData);
@@ -52,6 +54,8 @@ const LoginPage = () => {
           rollbar.error(t('notice.signin'), err, formData);
           throw new Error(`${t('notice.signin')}: ${err}`);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,7 +74,6 @@ const LoginPage = () => {
         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
           <Image src={img} alt={t('loginPage.imgAlt')} roundedCircle />
         </div>
-
         <Form onSubmit={f.handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
           <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
           <FloatingLabel controlId="floatingUsername" label={t('loginPage.nameLabel')} className="mb-3">
@@ -82,6 +85,7 @@ const LoginPage = () => {
               autoComplete="username"
               placeholder={t('loginPage.nameLabel')}
               isInvalid={(f.touched.username && f.errors.username) || authFailedText}
+              disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid">{f.errors.username}</Form.Control.Feedback>
           </FloatingLabel>
@@ -94,10 +98,18 @@ const LoginPage = () => {
               type="password"
               placeholder={t('loginPage.passwordLabel')}
               isInvalid={(f.touched.password && f.errors.password) || authFailedText}
+              disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid">{f.errors.password || authFailedText}</Form.Control.Feedback>
           </FloatingLabel>
-          <Button type="submit" variant="outline-primary" className="w-100 mb-3 btn">{t('loginPage.submitButton')}</Button>
+          <Button
+            type="submit"
+            variant="outline-primary"
+            className="w-100 mb-3 btn"
+            disabled={isLoading || !f.values.password || !f.values.username}
+          >
+            {t('loginPage.submitButton')}
+          </Button>
         </Form>
       </div>
       <div className="card-footer p-4">

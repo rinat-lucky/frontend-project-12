@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import { Provider as StoreProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import io from 'socket.io-client';
+import filter from 'leo-profanity';
 
 import ApiProvider from './contexts/ApiProvider';
 import AuthProvider from './contexts/AuthProvider';
@@ -13,12 +14,10 @@ import { addChannel, renameChannel, removeChannel } from './slices/channelsSlice
 import { setDeliveryState, addMessage } from './slices/messagesSlice';
 import resources from './locales';
 
-import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.min.css';
-
 const init = async () => {
+  filter.loadDictionary('ru');
   const socket = io();
+  const i18n = i18next.createInstance();
 
   socket.on('newMessage', (message) => {
     store.dispatch(addMessage(message));
@@ -35,8 +34,9 @@ const init = async () => {
   socket.on('connect_error', () => {
     store.dispatch(setDeliveryState('networkError'));
   });
-
-  const i18n = i18next.createInstance();
+  socket.on("connect", () => {
+    store.dispatch(setDeliveryState(''));
+  });
 
   await i18n
     .use(initReactI18next)
