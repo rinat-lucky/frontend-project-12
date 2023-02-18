@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom";
-import { routesApp } from "../../routes";
-import { useAuth } from "../../hooks";
+import { Navigate } from 'react-router-dom';
+import { routesApp } from '../../routes';
+import { useAuth } from '../../hooks';
 
 const RequireAuth = ({ children }) => {
   const { user } = useAuth();

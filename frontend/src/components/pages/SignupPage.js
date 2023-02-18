@@ -69,6 +69,8 @@ const SignupPage = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
+  const disableBtn = isLoading || !f.values.password || !f.values.username || !f.values.confirmPassword;
+
   return (
     <AuthContainer>
       <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
@@ -90,7 +92,11 @@ const SignupPage = () => {
             />
             <Form.Control.Feedback type="invalid" tooltip>{f.errors.username}</Form.Control.Feedback>
           </FloatingLabel>
-          <FloatingLabel controlId="floatingPassword" label={t('signupPage.passwordLabel')} className="mb-3">
+          <FloatingLabel
+            controlId="floatingPassword"
+            label={t('signupPage.passwordLabel')}
+            className="mb-3"
+          >
             <Form.Control
               onChange={f.handleChange}
               value={f.values.password}
@@ -103,7 +109,11 @@ const SignupPage = () => {
             />
             <Form.Control.Feedback type="invalid" tooltip>{f.errors.password}</Form.Control.Feedback>
           </FloatingLabel>
-          <FloatingLabel controlId="floatingConfirmPassword" label={t('signupPage.confirmPasswordLabel')} className="mb-4">
+          <FloatingLabel
+            controlId="floatingConfirmPassword"
+            label={t('signupPage.confirmPasswordLabel')}
+            className="mb-4"
+          >
             <Form.Control
               name="confirmPassword"
               type="password"
@@ -113,13 +123,15 @@ const SignupPage = () => {
               isInvalid={authFailed || (f.touched.confirmPassword && f.errors.confirmPassword)}
               disabled={isLoading}
             />
-            <Form.Control.Feedback type="invalid" tooltip>{authFailed || f.errors.confirmPassword}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid" tooltip>
+              {authFailed || f.errors.confirmPassword}
+            </Form.Control.Feedback>
           </FloatingLabel>
           <Button
             type="submit"
             className="w-100"
             variant="outline-primary"
-            disabled={isLoading || !f.values.password || !f.values.username || !f.values.confirmPassword}
+            disabled={disableBtn}
           >
             {t('signupPage.submitButton')}
           </Button>

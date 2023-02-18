@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
-import { useSchemaNaming as useSchema} from '../../hooks/useSchema';
+import { useSchemaNaming as useSchema } from '../../hooks/useSchema';
 import { useChat } from '../../hooks';
 import { setLoading } from '../../slices/channelsSlice';
 import ModalForm from './ModalForm';

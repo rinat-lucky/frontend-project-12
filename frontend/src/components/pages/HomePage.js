@@ -50,7 +50,7 @@ const HomePage = () => {
       }
     };
     fetchData();
-  }, [dispatch, getData, rollbar, t, user]);
+  }, [dispatch, getData, rollbar, t, user, logOut, navigate]);
   /* eslint-enable consistent-return */
 
   return (

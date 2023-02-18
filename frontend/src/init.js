@@ -34,7 +34,7 @@ const init = async () => {
   socket.on('connect_error', () => {
     store.dispatch(setDeliveryState('networkError'));
   });
-  socket.on("connect", () => {
+  socket.on('connect', () => {
     store.dispatch(setDeliveryState(''));
   });
 

@@ -15,7 +15,7 @@ const ChannelsPanel = () => {
     <div className="col-4 col-md-2 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
         <span>{t('channelsTitle')}</span>
-        <Button 
+        <Button
           className="p-0 text-primary btn-group-vertical border-0 form-control w-auto"
           onClick={() => dispatch(setActiveModal({ type: 'add' }))}
           variant={null}
