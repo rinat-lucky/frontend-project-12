@@ -69,7 +69,13 @@ const SignupPage = () => {
     onSubmit: (values) => handleSubmitForm(values),
   });
 
-  const { values, errors, touched, handleChange, handleSubmit } = formik;
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleSubmit,
+  } = formik;
   const disableBtn = isLoading || !values.password || !values.username || !values.confirmPassword;
 
   return (
