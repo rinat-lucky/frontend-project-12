@@ -35,7 +35,7 @@ const SignupPage = () => {
     inputEl.current.focus();
   }, []);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmitForm = async (formData) => {
     setLoading(true);
     try {
       const userData = await signUp(formData);
@@ -59,17 +59,18 @@ const SignupPage = () => {
     }
   };
 
-  const f = useFormik({
+  const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
       confirmPassword: '',
     },
     validationSchema: useSchema(),
-    onSubmit: (values) => handleSubmit(values),
+    onSubmit: (values) => handleSubmitForm(values),
   });
 
-  const disableBtn = isLoading || !f.values.password || !f.values.username || !f.values.confirmPassword;
+  const { values, errors, touched, handleChange, handleSubmit } = formik;
+  const disableBtn = isLoading || !values.password || !values.username || !values.confirmPassword;
 
   return (
     <AuthContainer>
@@ -78,19 +79,19 @@ const SignupPage = () => {
           <Image src={img} roundedCircle alt={t('signupPage.title')} />
         </div>
 
-        <Form onSubmit={f.handleSubmit} className="w-50">
+        <Form onSubmit={handleSubmit} className="w-50">
           <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
           <FloatingLabel controlId="floatingUsername" label={t('signupPage.nameLabel')} className="mb-3">
             <Form.Control
               ref={inputEl}
-              onChange={f.handleChange}
-              value={f.values.username}
+              onChange={handleChange}
+              value={values.username}
               name="username"
               placeholder={t('signupPage.nameLabel')}
-              isInvalid={authFailed || (f.touched.username && f.errors.username)}
+              isInvalid={authFailed || (touched.username && errors.username)}
               disabled={isLoading}
             />
-            <Form.Control.Feedback type="invalid" tooltip>{f.errors.username}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid" tooltip>{errors.username}</Form.Control.Feedback>
           </FloatingLabel>
           <FloatingLabel
             controlId="floatingPassword"
@@ -98,16 +99,16 @@ const SignupPage = () => {
             className="mb-3"
           >
             <Form.Control
-              onChange={f.handleChange}
-              value={f.values.password}
+              onChange={handleChange}
+              value={values.password}
               name="password"
               aria-describedby="passwordHelpBlock"
               type="password"
               placeholder={t('signupPage.passwordLabel')}
-              isInvalid={authFailed || (f.touched.password && f.errors.password)}
+              isInvalid={authFailed || (touched.password && errors.password)}
               disabled={isLoading}
             />
-            <Form.Control.Feedback type="invalid" tooltip>{f.errors.password}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid" tooltip>{errors.password}</Form.Control.Feedback>
           </FloatingLabel>
           <FloatingLabel
             controlId="floatingConfirmPassword"
@@ -117,14 +118,14 @@ const SignupPage = () => {
             <Form.Control
               name="confirmPassword"
               type="password"
-              onChange={f.handleChange}
-              value={f.values.confirmPassword}
+              onChange={handleChange}
+              value={values.confirmPassword}
               placeholder={t('signupPage.confirmPasswordLabel')}
-              isInvalid={authFailed || (f.touched.confirmPassword && f.errors.confirmPassword)}
+              isInvalid={authFailed || (touched.confirmPassword && errors.confirmPassword)}
               disabled={isLoading}
             />
             <Form.Control.Feedback type="invalid" tooltip>
-              {authFailed || f.errors.confirmPassword}
+              {authFailed || errors.confirmPassword}
             </Form.Control.Feedback>
           </FloatingLabel>
           <Button
