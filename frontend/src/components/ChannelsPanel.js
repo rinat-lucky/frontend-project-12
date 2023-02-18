@@ -21,6 +21,7 @@ const ChannelsPanel = () => {
           variant={null}
         >
           <PlusSquare size={20} />
+          <span className="visually-hidden">+</span>
         </Button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill px-2">

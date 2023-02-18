@@ -1,11 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
+const DEFAULT_CHANNEL_ID = 1;
+
 const initialState = {
   channelsList: [],
   currentChannelId: null,
   activeModal: null,
-  updateLoading: false,
+  isLoading: false,
 };
 
 const channelsSlice = createSlice({
@@ -30,10 +32,13 @@ const channelsSlice = createSlice({
       targetChannel.name = payload.name;
     },
     removeChannel: (state, { payload }) => {
+      if (state.currentChannelId === payload) {
+        state.currentChannelId = DEFAULT_CHANNEL_ID;
+      }
       state.channelsList = state.channelsList.filter((channel) => channel.id !== payload);
     },
-    setUpdateLoading: (state, { payload }) => {
-      state.updateLoading = payload;
+    setLoading: (state, { payload }) => {
+      state.isLoading = payload;
     },
   },
 });
@@ -42,7 +47,7 @@ export const {
   setChannelsList,
   setCurrentChannel,
   setActiveModal,
-  setUpdateLoading,
+  setLoading,
   addChannel,
   renameChannel,
   removeChannel,

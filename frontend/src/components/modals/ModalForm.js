@@ -5,7 +5,7 @@ import { Button, Form } from 'react-bootstrap';
 import { setActiveModal } from '../../slices/channelsSlice';
 
 const ModalForm = ({ form }) => {
-  const isLoading = useSelector((state) => state.channels.updateLoading);
+  const isLoading = useSelector((state) => state.channels.isLoading);
   const inputEl = useRef(null);
   const dispatch = useDispatch();
   const { t } = useTranslation();

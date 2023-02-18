@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
+import { useNavigate } from 'react-router-dom';
 
 import { setChannelsList, setCurrentChannel } from '../../slices/channelsSlice';
 import { setMessages } from '../../slices/messagesSlice';
 import { useAuth, useChat } from '../../hooks';
+import { routesApp } from '../../routes';
 import Header from '../Header';
 import ChannelsPanel from '../ChannelsPanel';
 import MessagesPanel from '../MessagesPanel';
@@ -14,9 +16,10 @@ import ModalContainer from '../modals/ModalContainer';
 
 const HomePage = () => {
   const activeModal = useSelector((state) => state.channels.activeModal);
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
   const { getData } = useChat();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const rollbar = useRollbar();
 
@@ -29,14 +32,20 @@ const HomePage = () => {
         dispatch(setCurrentChannel(data.currentChannelId));
         dispatch(setMessages(data.messages));
       } catch (err) {
-        if (err.message === 'Network Error') {
-          toast.error(t('notice.networkError'));
-          rollbar.error(t('notice.networkError'), err);
-          throw new Error(`${t('notice.networkErrora')}: ${err}`);
-        } else {
-          toast.error(t('notice.getData'));
-          rollbar.error(t('notice.getData'), err, user);
-          throw new Error(`${t('notice.getData')}: ${err}`);
+        switch (err.code) {
+          case 'ERR_NETWORK':
+            toast.error(t('notice.networkError'));
+            rollbar.error(t('notice.networkError'), err);
+            throw new Error(`${t('notice.networkError')}: ${err}`);
+          case 'ERR_BAD_REQUEST':
+            logOut();
+            navigate(routesApp.loginPage);
+            console.error(err);
+            break;
+          default:
+            toast.error(t('notice.getData'));
+            rollbar.error(t('notice.getData'), err);
+            throw new Error(`${t('notice.getData')}: ${err}`);
         }
       }
     };

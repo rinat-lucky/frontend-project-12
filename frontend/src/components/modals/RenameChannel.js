@@ -2,8 +2,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { useSchemaNaming as useSchema } from '../../hooks/useSchema';
 import { useChat } from '../../hooks';
+import { setLoading } from '../../slices/channelsSlice';
 import ModalForm from './ModalForm';
-import { setUpdateLoading } from '../../slices/channelsSlice';
 
 const RenameChannel = () => {
   const { setChannels } = useChat();
@@ -16,9 +16,9 @@ const RenameChannel = () => {
     initialValues: { name: targetChannel.name },
     validationSchema: useSchema(channels),
     onSubmit: ({ name }) => {
-      dispatch(setUpdateLoading(true));
+      dispatch(setLoading(true));
       setChannels('renameChannel', { name, id: targetChannel.id });
-      dispatch(setUpdateLoading(false));
+      dispatch(setLoading(false));
     },
   });
 

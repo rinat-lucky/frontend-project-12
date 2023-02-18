@@ -2,8 +2,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { useSchemaNaming as useSchema} from '../../hooks/useSchema';
 import { useChat } from '../../hooks';
+import { setLoading } from '../../slices/channelsSlice';
 import ModalForm from './ModalForm';
-import { setUpdateLoading } from '../../slices/channelsSlice';
 
 const AddChannel = () => {
   const channels = useSelector((state) => state.channels.channelsList);
@@ -14,9 +14,9 @@ const AddChannel = () => {
     initialValues: { name: '' },
     validationSchema: useSchema(channels),
     onSubmit: ({ name }) => {
-      dispatch(setUpdateLoading(true));
+      dispatch(setLoading(true));
       setChannels('newChannel', { name });
-      dispatch(setUpdateLoading(false));
+      dispatch(setLoading(false));
     },
   });
 
