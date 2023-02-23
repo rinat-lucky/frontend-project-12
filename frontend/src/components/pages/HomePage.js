@@ -3,31 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
-import { useNavigate } from 'react-router-dom';
 
 import { setChannelsList, setCurrentChannel } from '../../slices/channelsSlice';
 import { setMessages } from '../../slices/messagesSlice';
-import { useAuth, useChat } from '../../hooks';
-import { routesApp } from '../../routes';
+import { useAuth } from '../../hooks';
 import Header from '../Header';
 import ChannelsPanel from '../ChannelsPanel';
 import MessagesPanel from '../MessagesPanel';
 import ModalContainer from '../modals/ModalContainer';
 
 const HomePage = () => {
-  const activeModal = useSelector((state) => state.channels.activeModal);
-  const { user, logOut } = useAuth();
-  const { getData } = useChat();
+  const activeModal = useSelector((state) => state.modal.activeModal);
+  const { logOut, fetchData } = useAuth();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const rollbar = useRollbar();
 
   /* eslint-disable consistent-return */
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       try {
-        const data = await getData(user.token);
+        const data = await fetchData();
         dispatch(setChannelsList(data.channels));
         dispatch(setCurrentChannel(data.currentChannelId));
         dispatch(setMessages(data.messages));
@@ -39,7 +35,6 @@ const HomePage = () => {
             throw new Error(`${t('notice.networkError')}: ${err}`);
           case 'ERR_BAD_REQUEST':
             logOut();
-            navigate(routesApp.loginPage);
             console.error(err);
             break;
           default:
@@ -49,8 +44,9 @@ const HomePage = () => {
         }
       }
     };
-    fetchData();
-  }, [dispatch, getData, rollbar, t, user, logOut, navigate]);
+    fetchInitialData();
+  /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, []);
   /* eslint-enable consistent-return */
 
   return (

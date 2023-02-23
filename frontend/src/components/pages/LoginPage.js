@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import * as yup from 'yup';
 import {
   Button,
   Form,
@@ -11,21 +12,18 @@ import {
   FloatingLabel,
 } from 'react-bootstrap';
 
-import { useSchemaLogin as useSchema } from '../../hooks/useSchema';
 import AuthContainer from '../AuthContainer';
-import { useAuth, useChat } from '../../hooks';
+import { useAuth } from '../../hooks';
 import { routesApp } from '../../routes';
 import img from '../../assets/login.jpg';
 
 const LoginPage = () => {
-  const { user, logIn } = useAuth();
-  const { signIn } = useChat();
+  const { user, logIn, signIn } = useAuth();
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const rollbar = useRollbar();
-  const [authFailedText, setAuthFailedText] = useState('');
-  const [isLoading, setLoading] = useState(false);
+  const [authFailed, setAuthFailed] = useState(false);
 
   useEffect(() => {
     if (user) navigate(routesApp.homePage);
@@ -36,7 +34,6 @@ const LoginPage = () => {
   }, []);
 
   const handleSubmit = async (formData) => {
-    setLoading(true);
     try {
       const userData = await signIn(formData);
       logIn(userData);
@@ -47,25 +44,35 @@ const LoginPage = () => {
           rollbar.error(t('notice.networkError'), err);
           throw new Error(`${t('notice.networkError')}: ${err}`);
         case 'ERR_BAD_REQUEST':
-          setAuthFailedText(t('error.wrongData'));
+          setAuthFailed(true);
           rollbar.error(t('error.wrongData'), err, formData);
           throw new Error(`${t('error.wrongData')}: ${err}`);
         default:
           rollbar.error(t('notice.signin'), err, formData);
           throw new Error(`${t('notice.signin')}: ${err}`);
       }
-    } finally {
-      setLoading(false);
     }
   };
+
+  const validationSchema = yup.object().shape({
+    username: yup.string()
+      .min(3, t('error.wrongLength'))
+      .max(20, t('error.wrongLength'))
+      .required(t('error.required')),
+    password: yup.string()
+      .required(t('error.required')),
+  });
 
   const f = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    validationSchema: useSchema(),
-    onSubmit: (values) => handleSubmit(values),
+    validationSchema,
+    onSubmit: (values, {setSubmitting}) => {
+      handleSubmit(values);
+      setSubmitting(false);
+    } 
   });
 
   return (
@@ -84,8 +91,8 @@ const LoginPage = () => {
               name="username"
               autoComplete="username"
               placeholder={t('loginPage.nameLabel')}
-              isInvalid={(f.touched.username && f.errors.username) || authFailedText}
-              disabled={isLoading}
+              isInvalid={(f.touched.username && f.errors.username) || authFailed}
+              disabled={f.isSubmitting}
             />
             <Form.Control.Feedback type="invalid">{f.errors.username}</Form.Control.Feedback>
           </FloatingLabel>
@@ -97,16 +104,18 @@ const LoginPage = () => {
               autoComplete="current-password"
               type="password"
               placeholder={t('loginPage.passwordLabel')}
-              isInvalid={(f.touched.password && f.errors.password) || authFailedText}
-              disabled={isLoading}
+              isInvalid={(f.touched.password && f.errors.password) || authFailed}
+              disabled={f.isSubmitting}
             />
-            <Form.Control.Feedback type="invalid">{f.errors.password || authFailedText}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {authFailed ? t('error.wrongData') : f.errors.password}
+            </Form.Control.Feedback>
           </FloatingLabel>
           <Button
             type="submit"
             variant="outline-primary"
             className="w-100 mb-3 btn"
-            disabled={isLoading || !f.values.password || !f.values.username}
+            disabled={f.isSubmitting || !f.values.password || !f.values.username}
           >
             {t('loginPage.submitButton')}
           </Button>

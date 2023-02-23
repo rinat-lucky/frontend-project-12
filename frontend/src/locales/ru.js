@@ -70,7 +70,6 @@ const ru = {
       tooShort: 'Не менее 6 символов',
       required: 'Обязательное поле',
       mustMatch: 'Пароли должны совпадать',
-      network: 'ошибка соединения',
     },
     notice: {
       newChannel: 'Канал создан',

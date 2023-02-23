@@ -6,8 +6,6 @@ const DEFAULT_CHANNEL_ID = 1;
 const initialState = {
   channelsList: [],
   currentChannelId: null,
-  activeModal: null,
-  isLoading: false,
 };
 
 const channelsSlice = createSlice({
@@ -20,12 +18,8 @@ const channelsSlice = createSlice({
     setCurrentChannel: (state, { payload }) => {
       state.currentChannelId = payload;
     },
-    setActiveModal: (state, { payload }) => {
-      state.activeModal = payload;
-    },
     addChannel: (state, { payload }) => {
       state.channelsList.push(payload);
-      state.currentChannelId = payload.id;
     },
     renameChannel: (state, { payload }) => {
       const targetChannel = state.channelsList.find((channel) => channel.id === payload.id);
@@ -37,17 +31,12 @@ const channelsSlice = createSlice({
       }
       state.channelsList = state.channelsList.filter((channel) => channel.id !== payload);
     },
-    setLoading: (state, { payload }) => {
-      state.isLoading = payload;
-    },
   },
 });
 
 export const {
   setChannelsList,
   setCurrentChannel,
-  setActiveModal,
-  setLoading,
   addChannel,
   renameChannel,
   removeChannel,

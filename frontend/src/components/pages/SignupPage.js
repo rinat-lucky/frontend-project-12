@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import * as yup from 'yup';
 import {
   Button,
   Form,
@@ -13,19 +14,16 @@ import {
 
 import AuthContainer from '../AuthContainer';
 import { routesApp } from '../../routes';
-import { useAuth, useChat } from '../../hooks';
-import { useSchemaSignup as useSchema } from '../../hooks/useSchema';
-import img from '../../assets/login.jpg';
+import { useAuth } from '../../hooks';
+import img from '../../assets/signup.jpg';
 
 const SignupPage = () => {
-  const { user, logIn } = useAuth();
-  const { signUp } = useChat();
+  const { user, logIn, signUp } = useAuth();
   const inputEl = useRef(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const rollbar = useRollbar();
-  const [authFailed, setAuthFailedText] = useState('');
-  const [isLoading, setLoading] = useState(false);
+  const [authFailed, setAuthFailed] = useState(false);
 
   useEffect(() => {
     if (user) navigate(routesApp.homePage);
@@ -36,7 +34,6 @@ const SignupPage = () => {
   }, []);
 
   const handleSubmitForm = async (formData) => {
-    setLoading(true);
     try {
       const userData = await signUp(formData);
       logIn(userData);
@@ -47,17 +44,28 @@ const SignupPage = () => {
           rollbar.error(t('notice.networkError'), err);
           throw new Error(`${t('notice.networkError')}: ${err}`);
         case 'ERR_BAD_REQUEST':
-          setAuthFailedText(t('error.userAlreadyExist'));
+          setAuthFailed(true);
           rollbar.error(t('error.userAlreadyExist'), err, formData);
           throw new Error(`${t('error.userAlreadyExist')}: ${err}`);
         default:
           rollbar.error(t('notice.signup'), err, formData);
           throw new Error(`${t('notice.signup')}: ${err}`);
       }
-    } finally {
-      setLoading(false);
     }
   };
+
+  const validationSchema = yup.object().shape({
+    username: yup.string()
+      .min(3, t('error.wrongLength'))
+      .max(20, t('error.wrongLength'))
+      .required(t('error.required')),
+    password: yup.string()
+      .min(6, t('error.tooShort'))
+      .required(t('error.required')),
+    confirmPassword: yup.string()
+      .required(t('error.required'))
+      .oneOf([yup.ref('password')], t('error.mustMatch')),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -65,18 +73,22 @@ const SignupPage = () => {
       password: '',
       confirmPassword: '',
     },
-    validationSchema: useSchema(),
-    onSubmit: (values) => handleSubmitForm(values),
+    validationSchema,
+    onSubmit: (values, { setSubmitting }) => {
+      handleSubmitForm(values);
+      setSubmitting(false);
+    }
   });
 
   const {
     values,
     errors,
     touched,
+    isSubmitting,
     handleChange,
     handleSubmit,
   } = formik;
-  const disableBtn = isLoading || !values.password || !values.username || !values.confirmPassword;
+  const disableBtn = isSubmitting || !values.password || !values.username || !values.confirmPassword;
 
   return (
     <AuthContainer>
@@ -95,7 +107,7 @@ const SignupPage = () => {
               name="username"
               placeholder={t('signupPage.nameLabel')}
               isInvalid={authFailed || (touched.username && errors.username)}
-              disabled={isLoading}
+              disabled={isSubmitting}
             />
             <Form.Control.Feedback type="invalid" tooltip>{errors.username}</Form.Control.Feedback>
           </FloatingLabel>
@@ -112,7 +124,7 @@ const SignupPage = () => {
               type="password"
               placeholder={t('signupPage.passwordLabel')}
               isInvalid={authFailed || (touched.password && errors.password)}
-              disabled={isLoading}
+              disabled={isSubmitting}
             />
             <Form.Control.Feedback type="invalid" tooltip>{errors.password}</Form.Control.Feedback>
           </FloatingLabel>
@@ -128,10 +140,10 @@ const SignupPage = () => {
               value={values.confirmPassword}
               placeholder={t('signupPage.confirmPasswordLabel')}
               isInvalid={authFailed || (touched.confirmPassword && errors.confirmPassword)}
-              disabled={isLoading}
+              disabled={isSubmitting}
             />
             <Form.Control.Feedback type="invalid" tooltip>
-              {authFailed || errors.confirmPassword}
+              {authFailed ? t('error.userAlreadyExist') : errors.confirmPassword}
             </Form.Control.Feedback>
           </FloatingLabel>
           <Button

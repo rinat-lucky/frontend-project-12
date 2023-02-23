@@ -1,13 +1,22 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Element, scroller } from 'react-scroll';
 
 const MessagesList = ({ messages }) => {
   const channels = useSelector((state) => state.channels.channelsList);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const { t } = useTranslation();
 
+  console.log('channels-msglist', channels);
+  console.log('current-channel-id-msglist', currentChannelId);
+
+  useEffect(() => {
+    scroller.scrollTo('scrollToElement', { containerId: 'messages-box' });
+  });
+
   const renderCurrentChannelName = () => {
-    if (!channels || !currentChannelId) return '';
+    if (!(channels && currentChannelId)) return '';
     const currentChannel = channels.find((channel) => channel.id === currentChannelId);
     return (<b>{`# ${currentChannel.name}`}</b>);
   };
@@ -32,6 +41,7 @@ const MessagesList = ({ messages }) => {
       </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5 ">
         {renderMessages()}
+        <Element name="scrollToElement" />
       </div>
     </>
   );

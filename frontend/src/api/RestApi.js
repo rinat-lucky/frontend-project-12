@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { routesAPI } from '../routes';
+import { getAuthHeader } from '../utils';
 
-const ChatAPI = () => {
+const RestAPI = () => {
   const signIn = async (userData) => {
     const res = await axios.post(routesAPI.signinPath(), userData);
     return res.data;
@@ -12,10 +13,10 @@ const ChatAPI = () => {
     return res.data;
   };
 
-  const getData = async (jwt) => {
+  const fetchData = async () => {
     const res = await axios.get(
       routesAPI.dataPath(),
-      { headers: { Authorization: `Bearer ${jwt}` } },
+      { headers: { ...getAuthHeader() } },
     );
     return res.data;
   };
@@ -23,8 +24,8 @@ const ChatAPI = () => {
   return {
     signIn,
     signUp,
-    getData,
+    fetchData,
   };
 };
 
-export default ChatAPI;
+export default RestAPI;

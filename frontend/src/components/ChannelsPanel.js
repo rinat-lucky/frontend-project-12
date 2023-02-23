@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { PlusSquare } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'react-bootstrap';
-import { setActiveModal } from '../slices/channelsSlice';
+import { setActiveModal } from '../slices/modalSlice';
 import ChannelsList from './ChannelsList';
 
 const ChannelsPanel = () => {

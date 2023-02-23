@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { setActiveModal, setCurrentChannel } from '../slices/channelsSlice';
+import { setCurrentChannel } from '../slices/channelsSlice';
+import { setActiveModal } from '../slices/modalSlice';
 
 const channelOptions = ['rename', 'remove'];
 
