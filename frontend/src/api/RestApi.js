@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { routesAPI } from '../routes';
-import { getAuthHeader } from '../utils';
+import getAuthHeader from '../utils';
 
 const RestAPI = () => {
   const signIn = async (userData) => {
