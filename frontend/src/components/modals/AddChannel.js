@@ -29,7 +29,7 @@ const AddChannel = () => {
     onSubmit: ({ name }, { setSubmitting }) => {
       const handleResponse = ({ status, data }) => {
         if (status === 'ok') {
-          dispatch(setCurrentChannel(data.id));
+          setTimeout(() => dispatch(setCurrentChannel(data.id)), 1000);
           dispatch(setActiveModal(null));
           toast.success(t('notice.newChannel'));
         }
