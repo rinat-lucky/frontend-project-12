@@ -24,7 +24,7 @@ const RemoveChannel = () => {
       setChannels('removeChannel', { id: activeModal.channelId }, handleResponse);
       setSubmitting(false);
     },
-  }); 
+  });
 
   return (
     <Form onSubmit={formik.handleSubmit}>

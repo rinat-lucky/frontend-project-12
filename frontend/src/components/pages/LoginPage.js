@@ -69,10 +69,10 @@ const LoginPage = () => {
       password: '',
     },
     validationSchema,
-    onSubmit: (values, {setSubmitting}) => {
+    onSubmit: (values, { setSubmitting }) => {
       handleSubmit(values);
       setSubmitting(false);
-    } 
+    },
   });
 
   return (

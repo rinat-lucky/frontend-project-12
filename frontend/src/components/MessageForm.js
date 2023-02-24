@@ -68,7 +68,7 @@ const MessageForm = () => {
             type="submit"
             variant={null}
             className="btn-group-vertical border-0"
-            disabled={f.isSubmitting|| !f.values.message}
+            disabled={f.isSubmitting || !f.values.message}
           >
             <ArrowRightSquare size={20} />
             <span className="visually-hidden">{t('messageButton')}</span>

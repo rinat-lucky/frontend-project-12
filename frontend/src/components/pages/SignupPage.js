@@ -77,7 +77,7 @@ const SignupPage = () => {
     onSubmit: (values, { setSubmitting }) => {
       handleSubmitForm(values);
       setSubmitting(false);
-    }
+    },
   });
 
   const {
@@ -88,7 +88,7 @@ const SignupPage = () => {
     handleChange,
     handleSubmit,
   } = formik;
-  const disableBtn = isSubmitting || !values.password || !values.username || !values.confirmPassword;
+  const disabled = isSubmitting || !values.password || !values.username || !values.confirmPassword;
 
   return (
     <AuthContainer>
@@ -150,7 +150,7 @@ const SignupPage = () => {
             type="submit"
             className="w-100"
             variant="outline-primary"
-            disabled={disableBtn}
+            disabled={disabled}
           >
             {t('signupPage.submitButton')}
           </Button>
