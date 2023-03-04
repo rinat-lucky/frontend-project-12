@@ -7,17 +7,13 @@ import { selectors } from '../slices/channelsSlice';
 const MessagesList = ({ messages }) => {
   const channels = useSelector(selectors.selectAll);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
+  const currentChannel = channels.find((channel) => channel.id === currentChannelId);
+  const header = currentChannel ? currentChannel.name : '';
   const { t } = useTranslation();
 
   useEffect(() => {
     scroller.scrollTo('scrollToElement', { containerId: 'messages-box' });
   });
-
-  const renderCurrentChannelName = () => {
-    if (!(channels && currentChannelId)) return '';
-    const currentChannel = channels.find((channel) => channel.id === currentChannelId);
-    return (<b>{`# ${currentChannel.name}`}</b>);
-  };
 
   const renderMessages = () => {
     if (!messages.length) return '';
@@ -33,7 +29,7 @@ const MessagesList = ({ messages }) => {
     <>
       <div className="bg-light mb-4 p-3 shadow-sm small">
         <p className="m-0">
-          {renderCurrentChannelName()}
+          <b>{`# ${header}`}</b>
         </p>
         <span className="text-muted">{t('messagesCount.msg', { count: messages.length })}</span>
       </div>

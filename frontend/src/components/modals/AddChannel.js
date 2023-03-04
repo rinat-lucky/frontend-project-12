@@ -28,12 +28,12 @@ const AddChannel = () => {
     validationSchema,
     onSubmit: ({ name }, { setSubmitting }) => {
       const handleResponse = ({ data }) => {
-        dispatch(setCurrentChannel(data.id))
+        dispatch(setCurrentChannel(data.id));
+        dispatch(setActiveModal(null));
         toast.success(t('notice.newChannel'));
         setSubmitting(false);
       };
       addChannel({ name }, handleResponse);
-      dispatch(setActiveModal(null));
     },
   });
 
