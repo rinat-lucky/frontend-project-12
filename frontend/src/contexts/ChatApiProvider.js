@@ -12,7 +12,7 @@ const ChatApiProvider = ({ socket, children }) => {
     addChannel: (data, handleResponse) => {
       socket.emit('newChannel', data, (res) => {
         if (res.status === 'ok') {
-          setTimeout(() => handleResponse(res), 900);
+          setTimeout(() => handleResponse(res), 700);
         }
       });
     },
