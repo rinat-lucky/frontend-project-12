@@ -41,12 +41,12 @@ const MessageForm = () => {
   });
 
   const renderDeliveryStatus = () => {
-    if (!f.isSubmitting && !delivered) return '';
-
     if (f.isSubmitting) {
       return t('messagesStatus.sending');
     } else if (delivered) {
       return t('messagesStatus.delivered');
+    } else {
+      return '';
     }
   };
 
