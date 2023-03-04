@@ -30,11 +30,11 @@ const RenameChannel = () => {
     validationSchema,
     onSubmit: ({ name }, { setSubmitting }) => {
       const handleResponse = () => {
+        dispatch(setActiveModal(null));
         toast.success(t('notice.renameChannel'));
         setSubmitting(false);
       };
       renameChannel({ ...targetChannel, name }, handleResponse);
-      dispatch(setActiveModal(null));
     },
   });
 

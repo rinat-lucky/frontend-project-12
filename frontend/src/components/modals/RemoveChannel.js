@@ -16,11 +16,11 @@ const RemoveChannel = () => {
     initialValues: {},
     onSubmit: (_, { setSubmitting }) => {
       const handleResponse = () => {
+        dispatch(setActiveModal(null));
         toast.success(t('notice.removeChannel'));
         setSubmitting(false);
       };
       removeChannel({ id: activeModal.channelId }, handleResponse);
-      dispatch(setActiveModal(null));
     },
   });
 
