@@ -12,13 +12,13 @@ export const fetchData = createAsyncThunk(
       { headers: getAuthHeader() },
     );
     return data;
-  }
+  },
 );
 
 const DEFAULT_CHANNEL_ID = 1;
 const channelsAdapter = createEntityAdapter();
-const initialState = channelsAdapter.getInitialState({ 
-  currentChannelId: null, 
+const initialState = channelsAdapter.getInitialState({
+  currentChannelId: null,
   error: null,
 });
 

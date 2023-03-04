@@ -43,18 +43,16 @@ const MessageForm = () => {
   const renderDeliveryStatus = () => {
     if (!f.isSubmitting && !delivered) return '';
 
-    let statusText;
     if (f.isSubmitting) {
-      statusText = t('messagesStatus.sending');
+      return t('messagesStatus.sending');
     } else if (delivered) {
-      statusText = t('messagesStatus.delivered');
+      return t('messagesStatus.delivered');
     }
-    return (<div className="small text-muted">{statusText}</div>);
   };
 
   return (
     <>
-      {renderDeliveryStatus()}
+      <div className="small text-muted">{renderDeliveryStatus()}</div>
       <Form noValidate onSubmit={f.handleSubmit} className="py-1 border rounded-2">
         <InputGroup hasValidation>
           <Form.Control
