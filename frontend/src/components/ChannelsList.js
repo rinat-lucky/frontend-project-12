@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, ButtonGroup, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { setCurrentChannel } from '../slices/channelsSlice';
+import { setCurrentChannel, selectors } from '../slices/channelsSlice';
 import { setActiveModal } from '../slices/modalSlice';
 
-const channelOptions = ['rename', 'remove'];
+const CHANNEL_OPTIONS = ['rename', 'remove'];
 
 const ChannelsList = () => {
-  const channels = useSelector((state) => state.channels.channelsList);
+  const channels = useSelector(selectors.selectAll);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const ChannelsList = () => {
           <span className="visually-hidden">{t('channelSettings')}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {channelOptions.map((opt) => (
+          {CHANNEL_OPTIONS.map((opt) => (
             <Dropdown.Item
               onClick={() => dispatch(setActiveModal({ type: opt, channelId: channel.id }))}
               key={opt}

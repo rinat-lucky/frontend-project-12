@@ -13,21 +13,15 @@ const MessageForm = () => {
   const { t } = useTranslation();
   const inputEl = useRef(null);
   const { user } = useAuth();
-  const [deliveryState, setDeliveryState] = useState('');
+  const [delivered, setDelivered] = useState(false);
 
   useEffect(() => {
     inputEl.current.focus();
-  }, [currentChannelId, deliveryState]);
-
-  const messageStatusText = {
-    sending: t('messagesStatus.sending'),
-    delivered: t('messagesStatus.delivered'),
-  };
+  }, [currentChannelId, delivered]);
 
   const f = useFormik({
     initialValues: { message: '' },
     onSubmit: ({ message }, { resetForm, setSubmitting }) => {
-      setDeliveryState('sending');
       const filteredText = filter.clean(message);
       const newMessage = {
         channelId: currentChannelId,
@@ -36,19 +30,31 @@ const MessageForm = () => {
       };
       const handleResponse = ({ status }) => {
         if (status === 'ok') {
-          setDeliveryState('delivered');
-          resetForm();
-          setTimeout(() => setDeliveryState(''), 2000);
+          setDelivered(true);
           setSubmitting(false);
+          resetForm();
+          setTimeout(() => setDelivered(false), 2000);
         }
       };
       addMessage(newMessage, handleResponse);
     },
   });
 
+  const renderDeliveryStatus = () => {
+    if (!f.isSubmitting && !delivered) return '';
+
+    let statusText;
+    if (f.isSubmitting) {
+      statusText = t('messagesStatus.sending');
+    } else if (delivered) {
+      statusText = t('messagesStatus.delivered');
+    }
+    return (<div className="small text-muted">{statusText}</div>);
+  };
+
   return (
     <>
-      {!!deliveryState && (<div className="small text-muted">{messageStatusText[deliveryState]}</div>)}
+      {renderDeliveryStatus()}
       <Form noValidate onSubmit={f.handleSubmit} className="py-1 border rounded-2">
         <InputGroup hasValidation>
           <Form.Control

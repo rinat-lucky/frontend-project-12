@@ -33,10 +33,11 @@ const LoginPage = () => {
     inputEl.current.focus();
   }, []);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmitForm = async (formData, setSubmitting) => {
     try {
       const userData = await signIn(formData);
       logIn(userData);
+      setSubmitting(false);
     } catch (err) {
       switch (err.code) {
         case 'ERR_NETWORK':
@@ -69,10 +70,7 @@ const LoginPage = () => {
       password: '',
     },
     validationSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      handleSubmit(values);
-      setSubmitting(false);
-    },
+    onSubmit: (values, { setSubmitting }) => handleSubmitForm(values, setSubmitting),
   });
 
   return (

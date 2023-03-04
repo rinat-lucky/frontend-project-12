@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 import MessagesList from './MessagesList';
 import MessageForm from './MessageForm';
+import { selectors } from '../slices/messagesSlice';
 
 const MessagesPanel = () => {
+  const messages = useSelector(selectors.selectAll);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
-  const messages = useSelector((state) => state.messages.totalMessagesList);
   const visibleMessages = messages.filter((m) => Number(m.channelId) === Number(currentChannelId));
 
   return (

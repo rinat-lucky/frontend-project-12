@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { AuthContext } from './index.js';
-import restAPI from '../api/RestApi.js';
+import authAPI from '../api/authApi.js';
 
 const AuthProvider = ({ children }) => {
-  const { signIn, signUp, fetchData } = restAPI();
+  const { signIn, signUp } = authAPI();
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const initialState = currentUser || null;
   const [user, setUser] = useState(initialState);
@@ -25,7 +25,6 @@ const AuthProvider = ({ children }) => {
       logOut,
       signIn,
       signUp,
-      fetchData,
     }}
     >
       {children}

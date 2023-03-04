@@ -1,39 +1,56 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createEntityAdapter, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { routesAPI } from '../routes';
+import getAuthHeader from '../utils';
+
+export const fetchData = createAsyncThunk(
+  'fetchData',
+  async () => {
+    const { data } = await axios.get(
+      routesAPI.dataPath(),
+      { headers: getAuthHeader() },
+    );
+    return data;
+  }
+);
 
 const DEFAULT_CHANNEL_ID = 1;
-
-const initialState = {
-  channelsList: [],
-  currentChannelId: null,
-};
+const channelsAdapter = createEntityAdapter();
+const initialState = channelsAdapter.getInitialState({ 
+  currentChannelId: null, 
+  error: null,
+});
 
 const channelsSlice = createSlice({
   name: 'channels',
   initialState,
   reducers: {
-    setChannelsList: (state, { payload }) => {
-      state.channelsList = payload;
-    },
-    setCurrentChannel: (state, { payload }) => {
-      state.currentChannelId = payload;
-    },
-    addChannel: (state, { payload }) => {
-      state.channelsList.push(payload);
-    },
-    renameChannel: (state, { payload }) => {
-      const targetChannel = state.channelsList.find((channel) => channel.id === payload.id);
-      targetChannel.name = payload.name;
-    },
+    addChannel: channelsAdapter.addOne,
+    renameChannel: channelsAdapter.upsertOne,
     removeChannel: (state, { payload }) => {
       if (state.currentChannelId === payload) {
         state.currentChannelId = DEFAULT_CHANNEL_ID;
       }
-      state.channelsList = state.channelsList.filter((channel) => channel.id !== payload);
+      channelsAdapter.removeOne(state, payload);
     },
+    setCurrentChannel: (state, { payload }) => {
+      state.currentChannelId = payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.fulfilled, (state, { payload }) => {
+        channelsAdapter.addMany(state, payload.channels);
+        state.currentChannelId = payload.currentChannelId;
+      })
+      .addCase(fetchData.rejected, (state, { error }) => {
+        state.error = error;
+      });
   },
 });
 
+export const selectors = channelsAdapter.getSelectors((state) => state.channels);
 export const {
   setChannelsList,
   setCurrentChannel,

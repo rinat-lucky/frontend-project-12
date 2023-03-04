@@ -6,11 +6,12 @@ import * as yup from 'yup';
 import { useChat } from '../../hooks';
 import { setActiveModal } from '../../slices/modalSlice';
 import ModalForm from './ModalForm';
+import { selectors } from '../../slices/channelsSlice';
 
 const RenameChannel = () => {
-  const { setChannels } = useChat();
+  const { renameChannel } = useChat();
   const activeModal = useSelector((state) => state.modal.activeModal);
-  const channels = useSelector((state) => state.channels.channelsList);
+  const channels = useSelector(selectors.selectAll);
   const channelsNames = channels.map((c) => c.name);
   const targetChannel = channels.find((c) => c.id === activeModal.channelId);
   const { t } = useTranslation();
@@ -28,14 +29,12 @@ const RenameChannel = () => {
     initialValues: { name: targetChannel.name },
     validationSchema,
     onSubmit: ({ name }, { setSubmitting }) => {
-      const handleResponse = ({ status }) => {
-        if (status === 'ok') {
-          toast.success(t('notice.renameChannel'));
-          dispatch(setActiveModal(null));
-        }
+      const handleResponse = () => {
+        toast.success(t('notice.renameChannel'));
+        setSubmitting(false);
       };
-      setChannels('renameChannel', { name, id: targetChannel.id }, handleResponse);
-      setSubmitting(false);
+      renameChannel({ ...targetChannel, name }, handleResponse);
+      dispatch(setActiveModal(null));
     },
   });
 

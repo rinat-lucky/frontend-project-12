@@ -28,8 +28,8 @@ const init = async () => {
   socket.on('removeChannel', ({ id }) => {
     store.dispatch(removeChannel(id));
   });
-  socket.on('renameChannel', ({ id, name }) => {
-    store.dispatch(renameChannel({ id, name }));
+  socket.on('renameChannel', (updatedChannel) => {
+    store.dispatch(renameChannel(updatedChannel));
   });
 
   await i18n

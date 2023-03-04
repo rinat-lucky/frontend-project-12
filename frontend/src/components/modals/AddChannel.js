@@ -5,13 +5,13 @@ import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { useChat } from '../../hooks';
 import { setActiveModal } from '../../slices/modalSlice';
-import { setCurrentChannel } from '../../slices/channelsSlice';
+import { setCurrentChannel, selectors } from '../../slices/channelsSlice';
 import ModalForm from './ModalForm';
 
 const AddChannel = () => {
-  const channels = useSelector((state) => state.channels.channelsList);
+  const channels = useSelector(selectors.selectAll);
   const channelsNames = channels.map((c) => c.name);
-  const { setChannels } = useChat();
+  const { addChannel } = useChat();
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -27,15 +27,13 @@ const AddChannel = () => {
     initialValues: { name: '' },
     validationSchema,
     onSubmit: ({ name }, { setSubmitting }) => {
-      const handleResponse = ({ status, data }) => {
-        if (status === 'ok') {
-          setTimeout(() => dispatch(setCurrentChannel(data.id)), 1000);
-          dispatch(setActiveModal(null));
-          toast.success(t('notice.newChannel'));
-        }
+      const handleResponse = ({ data }) => {
+        dispatch(setCurrentChannel(data.id))
+        toast.success(t('notice.newChannel'));
+        setSubmitting(false);
       };
-      setChannels('newChannel', { name }, handleResponse);
-      setSubmitting(false);
+      addChannel({ name }, handleResponse);
+      dispatch(setActiveModal(null));
     },
   });
 

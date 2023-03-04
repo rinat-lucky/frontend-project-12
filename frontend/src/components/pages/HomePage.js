@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useRollbar } from '@rollbar/react';
 
-import { setChannelsList, setCurrentChannel } from '../../slices/channelsSlice';
-import { setMessages } from '../../slices/messagesSlice';
+import { fetchData } from '../../slices/channelsSlice';
 import { useAuth } from '../../hooks';
 import Header from '../Header';
 import ChannelsPanel from '../ChannelsPanel';
@@ -14,40 +13,32 @@ import ModalContainer from '../modals/ModalContainer';
 
 const HomePage = () => {
   const activeModal = useSelector((state) => state.modal.activeModal);
-  const { logOut, fetchData } = useAuth();
+  const err = useSelector((state) => state.channels.error);
+  const { logOut } = useAuth();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const rollbar = useRollbar();
 
-  /* eslint-disable consistent-return */
   useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const data = await fetchData();
-        dispatch(setChannelsList(data.channels));
-        dispatch(setCurrentChannel(data.currentChannelId));
-        dispatch(setMessages(data.messages));
-      } catch (err) {
-        switch (err.code) {
-          case 'ERR_NETWORK':
-            toast.error(t('notice.networkError'));
-            rollbar.error(t('notice.networkError'), err);
-            throw new Error(`${t('notice.networkError')}: ${err}`);
-          case 'ERR_BAD_REQUEST':
-            logOut();
-            console.error(err);
-            break;
-          default:
-            toast.error(t('notice.getData'));
-            rollbar.error(t('notice.getData'), err);
-            throw new Error(`${t('notice.getData')}: ${err}`);
-        }
-      }
-    };
-    fetchInitialData();
+    dispatch(fetchData());
   /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
-  /* eslint-enable consistent-return */
+
+  if (err) {
+    switch (err.code) {
+      case 'ERR_NETWORK':
+        toast.error(t('notice.networkError'));
+        rollbar.error(t('notice.networkError'), err);
+        throw new Error(`${t('notice.networkError')}: ${err}`);
+      case 'ERR_BAD_REQUEST':
+        logOut();
+        throw new Error(err);
+      default:
+        toast.error(t('notice.getData'));
+        rollbar.error(t('notice.getData'), err);
+        throw new Error(`${t('notice.getData')}: ${err}`);
+    }
+  }
 
   return (
     <>

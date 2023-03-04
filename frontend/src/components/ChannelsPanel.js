@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'react-bootstrap';
 import { setActiveModal } from '../slices/modalSlice';
 import ChannelsList from './ChannelsList';
+import { selectors } from '../slices/channelsSlice';
 
 const ChannelsPanel = () => {
-  const channels = useSelector((state) => state.channels.channelsList);
+  const channels = useSelector(selectors.selectAll);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const { t } = useTranslation();
   const dispatch = useDispatch();

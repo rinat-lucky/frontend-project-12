@@ -2,14 +2,12 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Element, scroller } from 'react-scroll';
+import { selectors } from '../slices/channelsSlice';
 
 const MessagesList = ({ messages }) => {
-  const channels = useSelector((state) => state.channels.channelsList);
+  const channels = useSelector(selectors.selectAll);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
   const { t } = useTranslation();
-
-  console.log('channels-msglist', channels);
-  console.log('current-channel-id-msglist', currentChannelId);
 
   useEffect(() => {
     scroller.scrollTo('scrollToElement', { containerId: 'messages-box' });
