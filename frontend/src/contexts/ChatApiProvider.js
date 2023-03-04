@@ -16,7 +16,7 @@ const ChatApiProvider = ({ socket, children }) => {
       socket.emit('newMessage', msg, (res) => checkResponse(res, handleResponse));
     },
     addChannel: (data, handleResponse) => {
-      socket.emit('newChannel', data, (res) => checkResponse(res, handleResponse, 600));
+      socket.emit('newChannel', data, (res) => checkResponse(res, handleResponse, 300));
     },
     renameChannel: (data, handleResponse) => {
       socket.emit('renameChannel', data, (res) => checkResponse(res, handleResponse));
