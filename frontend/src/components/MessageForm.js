@@ -45,9 +45,8 @@ const MessageForm = () => {
       return t('messagesStatus.sending');
     } else if (delivered) {
       return t('messagesStatus.delivered');
-    } else {
-      return '';
     }
+    return '';
   };
 
   return (
