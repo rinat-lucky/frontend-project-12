@@ -5,8 +5,8 @@ const ChatApiProvider = ({ socket, children }) => {
     if (response.status === 'ok') {
       callback(response);
     }
-  }
-  
+  };
+
   const chatAPI = {
     addMessage: (msg, handleResponse) => {
       socket.emit('newMessage', msg, (res) => checkStatus(res, handleResponse));
