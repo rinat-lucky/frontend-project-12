@@ -1,34 +1,28 @@
 import { ChatApiContext } from '.';
 
 const ChatApiProvider = ({ socket, children }) => {
+  const checkResponse = (res, callback, timeout) => {
+    if (res.status === 'ok') {
+      if (timeout) {
+        setTimeout(() => callback(res), timeout);
+      } else {
+        callback(res);
+      }
+    }
+  };
+  
   const chatAPI = {
     addMessage: (msg, handleResponse) => {
-      socket.emit('newMessage', msg, (res) => {
-        if (res.status === 'ok') {
-          handleResponse(res);
-        }
-      });
+      socket.emit('newMessage', msg, (res) => checkResponse(res, handleResponse));
     },
     addChannel: (data, handleResponse) => {
-      socket.emit('newChannel', data, (res) => {
-        if (res.status === 'ok') {
-          setTimeout(() => handleResponse(res), 700);
-        }
-      });
+      socket.emit('newChannel', data, (res) => checkResponse(res, handleResponse, 600));
     },
     renameChannel: (data, handleResponse) => {
-      socket.emit('renameChannel', data, (res) => {
-        if (res.status === 'ok') {
-          handleResponse(res);
-        }
-      });
+      socket.emit('renameChannel', data, (res) => checkResponse(res, handleResponse));
     },
     removeChannel: (data, handleResponse) => {
-      socket.emit('removeChannel', data, (res) => {
-        if (res.status === 'ok') {
-          handleResponse(res);
-        }
-      });
+      socket.emit('removeChannel', data, (res) => checkResponse(res, handleResponse));
     },
   };
 
